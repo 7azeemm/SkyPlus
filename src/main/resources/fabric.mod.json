@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "skyplus",
+  "version": "${version}",
+  "name": "SkyPlus",
+  "description": "",
+  "authors": ["7azem"],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/skyplus/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.hazem.skyplus.Skyplus"
+    ]
+  },
+  "mixins": [
+    "skyplus.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
