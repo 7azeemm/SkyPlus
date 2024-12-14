@@ -6,6 +6,7 @@ import net.fabricmc.api.ClientModInitializer;
 public class Skyplus implements ClientModInitializer {
     private static Skyplus INSTANCE;
     public static final String NAMESPACE = "skyplus";
+    //LOL
 
     @Override
     public void onInitializeClient() {
