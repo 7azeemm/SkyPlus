@@ -28,50 +28,16 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      # Step 4: Archive build artifacts
-      - name: Archive build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-output
-          path: build/libs/*.jar
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      # Step 1: Download the artifact from the build job
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-output
-
-      # Step 2: Set the JAR file name dynamically
+      # Step 4: Set the JAR file name dynamically
       - name: Get JAR file name
         id: jar_file
         run: |
           JAR_NAME=$(ls build/libs/*.jar | head -n 1 | xargs -n 1 basename)
           echo "JAR_FILE=$JAR_NAME" >> $GITHUB_ENV
 
-      # Step 3: Create GitHub Release
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Step 5: Upload the JAR file
+      - name: Upload JAR file
+        uses: actions/upload-artifact@v3
         with:
-          tag_name: v${{ github.run_number }}
-          release_name: "Release v${{ github.run_number }}"
-          body: |
-            Automated release for commit: ${{ github.sha }}
-          draft: false
-          prerelease: true  # Mark as a prerelease/beta if needed
-
-      # Step 4: Upload Release Asset
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/libs/${{ env.JAR_FILE }}
-          asset_name: ${{ env.JAR_FILE }}
-          asset_content_type: application/java-archive
+          name: my-mod-jar
+          path: build/libs/${{ env.JAR_FILE }}
