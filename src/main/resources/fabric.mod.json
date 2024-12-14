@@ -12,6 +12,9 @@
   "entrypoints": {
     "client": [
       "com.hazem.skyplus.Skyplus"
+    ],
+    "modmenu": [
+      "com.hazem.skyplus.compatibility.ModMenu"
     ]
   },
   "mixins": [

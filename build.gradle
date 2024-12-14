@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.8-SNAPSHOT'
+    id 'fabric-loom' version '1.9-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -10,32 +10,48 @@ base {
     archivesName = project.archives_base_name
 }
 
-loom {
-    splitEnvironmentSourceSets()
-
-    mods {
-        "skyplus" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
-        }
-    }
-}
-
 repositories {
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
+    mavenCentral()
+
+    // YACL
+    maven {
+        url "https://maven.isxander.dev/releases"
+
+        content {
+            includeGroup "dev.isxander"
+            includeGroup "org.quiltmc.parsers"
+        }
+    }
+
+    // ModMenu
+    maven {
+        url "https://maven.terraformersmc.com/releases"
+
+        content {
+            includeGroup "com.terraformersmc"
+        }
+    }
 }
 
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
+    // Fabric API
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // YACL
+    include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
+
+    // Mod Menu
+    modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 }
 
 processResources {
