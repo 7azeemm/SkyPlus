@@ -28,7 +28,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      # Step 4: Create a release artifact
+      # Step 4: Archive build artifacts
       - name: Archive build artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -46,7 +46,14 @@ jobs:
         with:
           name: build-output
 
-      # Step 3: Publish a release
+      # Step 2: Set the JAR file name dynamically
+      - name: Get JAR file name
+        id: jar_file
+        run: |
+          JAR_NAME=$(ls build/libs/*.jar | head -n 1 | xargs -n 1 basename)
+          echo "JAR_FILE=$JAR_NAME" >> $GITHUB_ENV
+
+      # Step 3: Create GitHub Release
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
