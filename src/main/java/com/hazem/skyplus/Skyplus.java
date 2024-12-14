@@ -11,7 +11,7 @@ public class Skyplus implements ClientModInitializer {
     public void onInitializeClient() {
         INSTANCE = this;
         ConfigManager.init();
-        int a = 5;
+        int a = 6;
     }
 
     public static Skyplus getInstance() {
