@@ -21,6 +21,9 @@ jobs:
           java-version: 23
           distribution: 'temurin'
 
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
+
       # Step 3: Build the project using Gradle
       - name: Build with Gradle
         run: ./gradlew build
