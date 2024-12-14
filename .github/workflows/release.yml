@@ -46,8 +46,9 @@ jobs:
         with:
           name: build-output
 
-      # Step 2: Publish a release
+      # Step 3: Publish a release
       - name: Create GitHub Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -58,17 +59,12 @@ jobs:
             Automated release for commit: ${{ github.sha }}
           draft: false
           prerelease: true  # Mark as a prerelease/beta if needed
+
+      # Step 4: Upload Release Asset
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         with:
-          result-encoding: string
-          script: |
-            const fs = require("fs")
-            return fs.readdirSync("build/libs/").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && e.endsWith(".jar"))[0].replace(".jar", "");
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.fname.outputs.result }}
-          path: build/libs/
-
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/libs/${{ env.JAR_FILE }}
+          asset_name: ${{ env.JAR_FILE }}
+          asset_content_type: application/java-archive
