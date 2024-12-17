@@ -3,6 +3,7 @@ package com.hazem.skyplus.config;
 import com.google.gson.FieldNamingPolicy;
 import com.hazem.skyplus.Skyplus;
 import com.hazem.skyplus.config.categories.GardenCategory;
+import com.hazem.skyplus.utils.schedular.Scheduler;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
@@ -35,10 +36,7 @@ public class ConfigManager {
     public static void init() {
         HANDLER.load();
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(Skyplus.NAMESPACE).then(ClientCommandManager.literal("config")
-                .executes(context -> {
-                    MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(createGUI(null)));
-                    return 1;
-                }
+                .executes(Scheduler.openScreen(() -> createGUI(null))
         )))));
     }
 
