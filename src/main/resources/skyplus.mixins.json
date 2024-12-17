@@ -4,8 +4,14 @@
   "package": "com.hazem.skyplus.mixins",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "FishingBobberEntityMixin",
+    "YggdrasilServicesKeyInfoMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "ClientPlayNetworkHandlerMixin",
+    "PlayerSkinProviderMixin"
+  ]
 }
