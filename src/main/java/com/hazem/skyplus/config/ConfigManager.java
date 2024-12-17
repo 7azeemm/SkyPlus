@@ -28,6 +28,10 @@ public class ConfigManager {
                     .build())
             .build();
 
+    public static SkyPlusConfig getHandler() {
+        return HANDLER.instance();
+    }
+
     public static void init() {
         HANDLER.load();
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(Skyplus.NAMESPACE).then(ClientCommandManager.literal("config")

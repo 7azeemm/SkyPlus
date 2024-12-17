@@ -41,7 +41,7 @@ jobs:
             file = file.toString().split("\n").map(e => e.trim().startsWith("mod_version") ? `${e}-${buildType}-${commitSha.substring(0, 7)}` : e).join("\n");
             fs.writeFileSync("./gradle.properties", file);
 
-      # Step 2: Set up Java (adjust the version if needed)
+      # Step 3: Set up Java 23
       - name: Set up JDK 23
         uses: actions/setup-java@v4
         with:
@@ -51,7 +51,7 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
-      # Step 3: Build the project using Gradle
+      # Step 5: Build the project using Gradle
       - name: Build with Gradle
         run: ./gradlew build
 
