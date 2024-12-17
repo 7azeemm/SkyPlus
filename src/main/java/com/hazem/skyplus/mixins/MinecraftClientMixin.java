@@ -22,7 +22,6 @@ public abstract class MinecraftClientMixin {
 
     @ModifyVariable(at = @At("HEAD"), method = "setScreen", ordinal = 0, argsOnly = true)
     public Screen BypassLoadingScreen(Screen screen) {
-        if (screen != null) System.out.println(screen.getClass());
         return switch (screen) {
             case DownloadingTerrainScreen ignored -> null;
             case ReconfiguringScreen ignored when this.getNetworkHandler() != null ->
