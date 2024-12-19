@@ -1,9 +1,10 @@
 package com.hazem.skyplus.utils.hud;
 
 import com.hazem.skyplus.utils.hud.components.Component;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.gui.DrawContext;
 
-import java.util.ArrayList;
+import java.util.function.Supplier;
 
 /**
  * Abstract base class representing a widget in the HUD.
@@ -12,11 +13,40 @@ import java.util.ArrayList;
 public abstract class Widget {
     private static final int BACKGROUND_COLOR = 0xc00c0c0c; // Color of the widget's background
     private static final int PADDING = 4; // Padding around components and within the widget
-    private final ArrayList<Component> components = new ArrayList<>();
+    private final ObjectArrayList<Component> components = new ObjectArrayList<>();
+    private final ObjectArrayList<Trackable<?>> trackables = new ObjectArrayList<>();
     private int w, h;
 
     public Widget() {
         HUDMaster.addWidget(this);
+        trackables();
+    }
+
+    /**
+     * Abstract method for adding trackables to the widget.
+     * Subclasses should override this method to define the specific values to track.
+     * This method should use {@link #addTrackable(Supplier)} to register each value
+     * that needs to be monitored for changes.
+     */
+    public abstract void trackables();
+
+    /**
+     * Adds a trackable supplier to the list of items to be monitored for changes.
+     *
+     * @param supplier The supplier that provides the current value to track
+     */
+    public void addTrackable(Supplier<?> supplier) {
+        trackables.add(new Trackable<>(supplier));  // Wrap the supplier in a Trackable object
+    }
+
+    /**
+     * Checks if any of the trackables have changed.
+     *
+     * @return true if any tracked value has changed, false otherwise
+     */
+    private boolean needsUpdate() {
+        if (trackables.isEmpty() && components.isEmpty()) return true;
+        return trackables.stream().anyMatch(Trackable::isChanged);  // Check if any trackable has changed
     }
 
     /**
@@ -50,6 +80,9 @@ public abstract class Widget {
      * Updates the widget every frame
      */
     public void updateFrame() {
+        // If there are no changes, no need to update the widget
+        if (!needsUpdate()) return;
+
         components.clear();
         update();
         recalculateSize();
