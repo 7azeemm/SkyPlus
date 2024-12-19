@@ -3,14 +3,12 @@
   "minVersion": "0.8",
   "package": "com.hazem.skyplus.mixins",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "FishingBobberEntityMixin",
-    "YggdrasilServicesKeyInfoMixin"
-  ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
+    "FishingBobberEntityMixin",
+    "YggdrasilServicesKeyInfoMixin",
     "ClientPlayNetworkHandlerMixin",
     "MinecraftClientMixin",
     "PlayerSkinProviderMixin"

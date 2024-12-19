@@ -1,13 +1,12 @@
 package com.hazem.skyplus.utils.schedular;
 
 import com.mojang.brigadier.Command;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -19,7 +18,7 @@ public class Scheduler {
     private static final Scheduler INSTANCE = new Scheduler();
 
     private int currentTick = 0; // Keeps track of the current tick
-    private final List<ScheduledTask> tasks = new ArrayList<>();
+    private final ObjectArrayList<ScheduledTask> tasks = new ObjectArrayList<>();
 
     public static Scheduler getInstance() {
         return INSTANCE;
@@ -41,29 +40,47 @@ public class Scheduler {
     }
 
     /**
-     * Schedules a cyclic task to run at regular intervals.
-     *
-     * @param task         The task to run.
-     * @param intervalTicks The interval in ticks between task executions.
-     * @param async        Whether the task should run asynchronously.
-     */
-    public void scheduleCyclic(Runnable task, int intervalTicks, boolean async) {
-        addTask(task, intervalTicks, true, async);
-    }
-
-    /**
-     * Schedules a one-time task to run after a delay.
+     * Schedules a one-time task to run after a delay sync synchronously.
      *
      * @param task  The task to run.
      * @param delay The delay in ticks before the task is executed.
-     * @param async Whether the task should run asynchronously.
      */
-    public void schedule(Runnable task, int delay, boolean async) {
-        addTask(task, delay, false, async);
+    public void schedule(Runnable task, int delay) {
+        addTask(task, delay, false, false);
+    }
+
+    /**
+     * Schedules a one-time task to run after a delay asynchronously.
+     *
+     * @param task  The task to run.
+     * @param delay The delay in ticks before the task is executed.
+     */
+    public void scheduleAsync(Runnable task, int delay) {
+        addTask(task, delay, false, true);
+    }
+
+    /**
+     * Schedules a cyclic task to run at regular intervals synchronously.
+     *
+     * @param task          The task to run.
+     * @param intervalTicks The interval in ticks between task executions.
+     */
+    public void scheduleCyclic(Runnable task, int intervalTicks) {
+        addTask(task, intervalTicks, true, false);
+    }
+
+    /**
+     * Schedules a cyclic task to run at regular intervals asynchronously.
+     *
+     * @param task         The task to run.
+     * @param intervalTicks The interval in ticks between task executions.
+     */
+    public void scheduleCyclicAsync(Runnable task, int intervalTicks) {
+        addTask(task, intervalTicks, true, true);
     }
 
     private void addTask(Runnable task, int intervalTicks, boolean cyclic, boolean async) {
-        tasks.add(new ScheduledTask(task, intervalTicks, cyclic, async));
+        tasks.add(new ScheduledTask(task, intervalTicks, cyclic, async, currentTick + intervalTicks));
     }
 
     public void tick(MinecraftClient client) {
@@ -89,30 +106,18 @@ public class Scheduler {
                     client.execute(task.runnable);
                 }
 
-                if (task.cyclic) {
-                    // Reschedule for the next cycle
-                    task.nextExecutionTick += task.intervalTicks;
-                } else {
-                    // Remove one-time tasks
-                    iterator.remove();
-                }
+                // Reschedule for the next cycle
+                if (task.cyclic) tasks.add(task.next(currentTick));
+
+                iterator.remove();
             }
         }
     }
 
-    private static class ScheduledTask {
-        private final Runnable runnable; // The task to run
-        private final int intervalTicks; // Interval or delay in ticks
-        private final boolean cyclic; // Whether the task is cyclic
-        private final boolean async; // Whether the task runs asynchronously
-        private int nextExecutionTick; // The next tick this task should run
-
-        public ScheduledTask(Runnable runnable, int intervalTicks, boolean cyclic, boolean async) {
-            this.runnable = runnable;
-            this.intervalTicks = intervalTicks;
-            this.cyclic = cyclic;
-            this.async = async;
-            this.nextExecutionTick = Scheduler.getInstance().currentTick + intervalTicks; // Schedule after the delay
+    private record ScheduledTask(Runnable runnable, int intervalTicks, boolean cyclic, boolean async, int nextExecutionTick) {
+        public ScheduledTask next(int currentTick) {
+            // Create a new instance for the next cycle
+            return new ScheduledTask(runnable, intervalTicks, cyclic, async, currentTick + intervalTicks);
         }
     }
 }
