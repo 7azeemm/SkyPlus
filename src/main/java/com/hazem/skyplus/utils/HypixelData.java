@@ -100,17 +100,15 @@ public class HypixelData {
 
     private static void sendLocrawRequest() {
         Scheduler.getInstance().schedule(() -> {
-            if (CLIENT.player != null) {
-                CLIENT.player.networkHandler.sendChatMessage("/locraw");
-            }
+            ChatUtils.sendMessage("/locraw");
         }, LOC_RAW_REQUEST_DELAY);
     }
 
     private static void scheduleProfileIdRequest() {
         Scheduler.getInstance().schedule(() -> {
-            if (profileIdRequested && CLIENT.player != null) {
+            if (profileIdRequested) {
                 messagesToSuppress = 2;
-                CLIENT.player.networkHandler.sendChatMessage("/profileid");
+                ChatUtils.sendMessage("/profileid");
             }
         }, PROFILE_ID_REQUEST_DELAY);// 8 seconds
     }
