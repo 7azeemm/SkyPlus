@@ -3,15 +3,18 @@ package com.hazem.skyplus.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.hazem.skyplus.utils.schedular.Scheduler;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
 
 public class HypixelData {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+    private static final ObjectArrayList<String> SCOREBOARD_LINES = new ObjectArrayList<>();
     private static final String PROFILE_ID_PREFIX = "Profile ID: ";
     private static final String PROFILE_DASHING_TEXT = "§e§lCLICK THIS TO SUGGEST IT IN CHAT";
     private static final int PROFILE_ID_REQUEST_DELAY = 20 * 8; // 8 seconds
@@ -30,6 +33,7 @@ public class HypixelData {
         ClientPlayConnectionEvents.JOIN.register((handler, packetSender, client) -> onJoin(handler));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
         ClientReceiveMessageEvents.ALLOW_GAME.register(HypixelData::onChatMessage);
+        Scheduler.getInstance().scheduleCyclic(HypixelData::getScoreboardLines, 20);
     }
 
     private static void onJoin(ClientPlayNetworkHandler handler) {
@@ -72,8 +76,26 @@ public class HypixelData {
                 }
             }
         }
-
         return true;
+    }
+
+    public static void getScoreboardLines() {
+        if (CLIENT.player == null) return;
+        Scoreboard scoreboard = CLIENT.player.getScoreboard();
+        ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
+        SCOREBOARD_LINES.clear();
+
+        for (ScoreHolder scoreHolder : scoreboard.getKnownScoreHolders()) {
+            if (scoreboard.getScoreHolderObjectives(scoreHolder).containsKey(objective)) {
+                Team team = scoreboard.getScoreHolderTeam(scoreHolder.getNameForScoreboard());
+                if (team != null) {
+                    String strLine = team.getPrefix().getString() + team.getSuffix().getString();
+                    if (!strLine.isBlank()) SCOREBOARD_LINES.add(strLine);
+                }
+            }
+        }
+
+        if (objective != null) SCOREBOARD_LINES.add(objective.getDisplayName().getString());
     }
 
     private static void sendLocrawRequest() {
