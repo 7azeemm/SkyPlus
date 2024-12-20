@@ -40,7 +40,7 @@ public class Scheduler {
     }
 
     /**
-     * Schedules a one-time task to run after a delay sync synchronously.
+     * Schedules a one-time task to run after a delay synchronously.
      *
      * @param task  The task to run.
      * @param delay The delay in ticks before the task is executed.
