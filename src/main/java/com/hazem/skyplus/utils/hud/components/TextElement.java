@@ -7,11 +7,12 @@ import net.minecraft.text.Text;
 
 public class TextElement implements Element {
 
-    private final static TextRenderer TEXT_RENDERER = MinecraftClient.getInstance().textRenderer;
+    private static TextRenderer TEXT_RENDERER;
     private final Text text;
 
     public TextElement(Text text) {
         this.text = text;
+        TEXT_RENDERER = MinecraftClient.getInstance().textRenderer;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.hazem.skyplus.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.hazem.skyplus.annotations.Init;
 import com.hazem.skyplus.utils.schedular.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -20,7 +21,7 @@ public class HypixelData {
     private static final int PROFILE_ID_REQUEST_DELAY = 20 * 8; // 8 seconds
     private static final int LOC_RAW_REQUEST_DELAY = 5; // 0.25 seconds
     private static boolean profileIdRequested = false;
-    private static int messagesToSuppress = 0; // Tracks how many messages left to suppress
+    private static int messagesToSuppress; // Tracks how many messages left to suppress
 
     public static boolean isInHypixel = false;
     public static boolean isInHypixelAlpha = false;
@@ -29,6 +30,7 @@ public class HypixelData {
     public static String profileID = "";
     public static Location location = Location.UNKNOWN;
 
+    @Init
     public static void init() {
         ClientPlayConnectionEvents.JOIN.register((handler, packetSender, client) -> onJoin(handler));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());

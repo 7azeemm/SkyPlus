@@ -2,6 +2,7 @@ package com.hazem.skyplus.config;
 
 import com.google.gson.FieldNamingPolicy;
 import com.hazem.skyplus.Skyplus;
+import com.hazem.skyplus.annotations.Init;
 import com.hazem.skyplus.config.categories.GardenCategory;
 import com.hazem.skyplus.utils.schedular.Scheduler;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
@@ -10,7 +11,6 @@ import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.Identifier;
@@ -33,6 +33,7 @@ public class ConfigManager {
         return HANDLER.instance();
     }
 
+    @Init
     public static void init() {
         HANDLER.load();
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(Skyplus.NAMESPACE).then(ClientCommandManager.literal("config")
