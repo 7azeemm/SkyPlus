@@ -1,5 +1,7 @@
 package com.hazem.skyplus.utils.hud.components;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 
@@ -7,10 +9,12 @@ public class ItemStackElement implements Element {
     private static final int ICON_SIZE = 16; // Standard icon dimensions (Minecraft item icon size)
     private static final int SCALED_ICON_HEIGHT = 12; // Desired height for the rendered icon
     private static final float SCALE_FACTOR = (float) SCALED_ICON_HEIGHT / ICON_SIZE; // Scaling factor for resizing the icon
+    private final TextRenderer textRenderer;
     private final ItemStack itemStack;
 
     public ItemStackElement(ItemStack itemStack) {
         this.itemStack = itemStack;
+        this.textRenderer = MinecraftClient.getInstance().textRenderer;
     }
 
     @Override
@@ -29,6 +33,6 @@ public class ItemStackElement implements Element {
 
     @Override
     public int getHeight() {
-        return SCALED_ICON_HEIGHT; // Height matches the scaled value
+        return textRenderer.fontHeight; // Return the font height as the icon height
     }
 }

@@ -71,7 +71,7 @@ public abstract class Widget {
      * Recalculates the size of the widget based on the dimensions of its components.
      */
     final void recalculateSize() {
-        height = PADDING; // Initialize with top padding.
+        height = PADDING / 2; // Initialize with top padding.
         width = PADDING / 2; // Initialize with minimal width for padding.
 
         for (Component component : components) {
