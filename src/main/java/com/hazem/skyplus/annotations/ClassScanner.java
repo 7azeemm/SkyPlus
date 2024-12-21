@@ -38,8 +38,8 @@ public class ClassScanner {
                         String relativePath = root.toPath().relativize(pathItem).toString();
                         String className = packageName + '.' + relativePath.replace(File.separator, ".").replace(".class", "");
 
-                        // Skip mixin classes based on regex pattern
-                        if (className.contains("Mixin")) return; // Skip mixin classes
+                        // Skip mixin classes
+                        if (className.contains("Mixin")) return;
 
                         try {
                             classes.add(Class.forName(className));

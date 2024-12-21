@@ -11,7 +11,7 @@ import java.util.List;
 public class HUDMaster {
     public static final List<Widget> widgets = new ArrayList<>();
 
-    @Init
+    @Init(priority = Init.Priority.HIGH, ordinal = 2)
     public static void init() {
         HudRenderCallback.EVENT.register(HUDMaster::renderAll);
     }

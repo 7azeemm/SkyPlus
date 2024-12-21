@@ -30,7 +30,7 @@ public class HypixelData {
     public static String profileID = "";
     public static Location location = Location.UNKNOWN;
 
-    @Init
+    @Init(priority = Init.Priority.HIGH)
     public static void init() {
         ClientPlayConnectionEvents.JOIN.register((handler, packetSender, client) -> onJoin(handler));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());

@@ -6,10 +6,38 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The {@code Init} annotation is used to mark methods that should be
- * invoked during the initialization phase. These methods must be
- * static and have no parameters.
+ * Marks a method to be executed during initialization by the {@link InitProcessor}.
+ * Methods annotated with {@code @Init} must be static and have no parameters.
+ * Priority and ordinal values determine the execution order of methods.
+ *
+ * @see #ordinal()
+ * @see #priority()
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Init { }
+public @interface Init {
+
+    /**
+     * Defines the priority level of the method.
+     * Higher priority methods are executed before lower priority ones.
+     * Defaults to {@link Priority#LOW}.
+     *
+     * @return the priority level of the method
+     */
+    Priority priority() default Priority.LOW;
+
+    /**
+     * Defines the ordinal value within the priority level.
+     * Methods with the same priority are executed in ascending order of their ordinal value.
+     * Defaults to {@link Integer#MAX_VALUE}.
+     *
+     * @return the ordinal value of the method
+     */
+    int ordinal() default Integer.MAX_VALUE;
+
+    enum Priority {
+        HIGH,
+        MEDIUM,
+        LOW
+    }
+}

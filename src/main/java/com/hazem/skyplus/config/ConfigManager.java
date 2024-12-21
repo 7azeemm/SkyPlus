@@ -33,7 +33,7 @@ public class ConfigManager {
         return HANDLER.instance();
     }
 
-    @Init
+    @Init(priority = Init.Priority.HIGH, ordinal = 1)
     public static void init() {
         HANDLER.load();
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(Skyplus.NAMESPACE).then(ClientCommandManager.literal("config")
