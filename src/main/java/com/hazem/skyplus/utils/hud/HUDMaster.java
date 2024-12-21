@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HUDMaster {
-    private static final int TICK_INTERVAL = 10;
+    private static final int TICK_INTERVAL = 1;
     private static final List<Widget> widgets = new ArrayList<>();
 
     @Init(priority = Init.Priority.HIGH, ordinal = 2)
