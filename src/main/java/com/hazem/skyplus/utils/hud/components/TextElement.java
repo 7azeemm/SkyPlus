@@ -6,7 +6,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 public class TextElement implements Element {
-
     private static TextRenderer TEXT_RENDERER;
     private final Text text;
 

@@ -1,139 +1,132 @@
 package com.hazem.skyplus.utils.hud;
 
 import com.hazem.skyplus.utils.hud.components.Component;
+import com.hazem.skyplus.utils.hud.components.ComponentBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.gui.DrawContext;
-
-import java.util.function.Supplier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 
 /**
- * Abstract base class representing a widget in the HUD.
- * Subclasses must provide specific rendering logic and position updates.
+ * Represents a HUD Widget that can display various components (e.g., text, icons) on the screen.
  */
 public abstract class Widget {
-    private static final int BACKGROUND_COLOR = 0xc00c0c0c; // Color of the widget's background
-    private static final int PADDING = 4; // Padding around components and within the widget
+    private static final int BACKGROUND_COLOR = 0xc00c0c0c; // Widget's background color.
+    private static final int PADDING = 4; // Padding around and within the widget.
     private final ObjectArrayList<Component> components = new ObjectArrayList<>();
-    private final ObjectArrayList<Trackable<?>> trackables = new ObjectArrayList<>();
-    private int w, h;
+    private int width, height;
 
     public Widget() {
         HUDMaster.addWidget(this);
-        trackables();
     }
 
     /**
-     * Abstract method for adding trackables to the widget.
-     * Subclasses should override this method to define the specific values to track.
-     * This method should use {@link #addTrackable(Supplier)} to register each value
-     * that needs to be monitored for changes.
-     */
-    public abstract void trackables();
-
-    /**
-     * Adds a trackable supplier to the list of items to be monitored for changes.
-     *
-     * @param supplier The supplier that provides the current value to track
-     */
-    public void addTrackable(Supplier<?> supplier) {
-        trackables.add(new Trackable<>(supplier));  // Wrap the supplier in a Trackable object
-    }
-
-    /**
-     * Checks if any of the trackables have changed.
-     *
-     * @return true if any tracked value has changed, false otherwise
-     */
-    private boolean needsUpdate() {
-        if (trackables.isEmpty() && components.isEmpty()) return true;
-        return trackables.stream().anyMatch(Trackable::isChanged);  // Check if any trackable has changed
-    }
-
-    /**
-     * Determines if the widget should render.
-     * Subclasses must implement this to define their visibility conditions.
+     * Determines whether the widget should render on the screen.
      *
      * @return true if the widget should render, false otherwise.
      */
     protected abstract boolean shouldRender();
 
     /**
-     * Updates the state of the widget.
-     * Subclasses must implement this to update their components and state.
+     * Updates the widget's state (e.g., components or internal data) before rendering.
+     * This method should be implemented by subclasses to define specific behavior.
      */
     protected abstract void update();
 
+    /**
+     * Gets the X-coordinate where the widget should be rendered.
+     *
+     * @return the X-coordinate of the widget.
+     */
     protected abstract int getX();
+
+    /**
+     * Gets the Y-coordinate where the widget should be rendered.
+     *
+     * @return the Y-coordinate of the widget.
+     */
     protected abstract int getY();
 
     /**
-     * Determines if the widget's background should be drawn.
-     * Can be overridden by subclasses to disable background rendering.
+     * Indicates whether the widget should draw its background.
+     * Subclasses can override this to disable the background rendering.
      *
      * @return true if the background should be drawn, false otherwise.
      */
-    protected boolean shouldDrawBG() {
+    protected boolean shouldDrawBackground() {
         return true;
     }
 
     /**
-     * Updates the widget every frame
+     * Updates the widget for the current frame by clearing old components,
+     * running the update logic, and recalculating the widget's size.
      */
-    public void updateFrame() {
-        // If there are no changes, no need to update the widget
-        if (!needsUpdate()) return;
-
-        components.clear();
-        update();
-        recalculateSize();
+    final void updateFrame() {
+        components.clear(); // Clear previous components.
+        update(); // Update widget logic.
+        recalculateSize(); // Adjust size based on components.
     }
 
     /**
-     * Recalculates the size of the widget based on its components.
+     * Recalculates the size of the widget based on the dimensions of its components.
      */
-    private void recalculateSize() {
-        h = PADDING; // Start with initial padding
-        w = 0; // Reset width
-        for (Component c : components) {
-            h += c.getHeight() + PADDING; // Add height of each component with padding
-            w = Math.max(w, c.getWidth() + PADDING / 2); // Find the widest component
+    final void recalculateSize() {
+        height = PADDING; // Initialize with top padding.
+        width = PADDING / 2; // Initialize with minimal width for padding.
+
+        for (Component component : components) {
+            height += component.getHeight() + PADDING; // Add component height and padding.
+            width = Math.max(width, component.getWidth() + PADDING / 2); // Adjust to the widest component.
         }
-        w += PADDING / 2; // Add padding to the width
     }
 
     /**
-     * Adds a component to the widget.
+     * Adds a custom-built component to the widget.
      *
-     * @param component the component to add.
+     * @param builder the builder used to create the component.
      */
-    public void addComponent(Component component) {
-        components.add(component);
+    public void addComponent(ComponentBuilder builder) {
+        components.add(new Component(builder));
     }
 
     /**
-     * Renders the widget and its components.
-     * This method handles background rendering and delegates component rendering.
+     * Adds a text component to the widget.
      *
-     * @param context the draw context for rendering.
+     * @param text the text to be displayed in the widget.
      */
+    public void addText(Text text) {
+        components.add(new Component(text));
+    }
+
+    /**
+     * Adds an itemStack to the widget.
+     *
+     * @param itemStack the ItemStack to be displayed as an icon.
+     */
+    public void addIcon(ItemStack itemStack) {
+        components.add(new Component(itemStack));
+    }
+
     final void render(DrawContext context) {
         int x = getX();
         int y = getY();
 
-        // Draw the widget's background if enabled
-        if (shouldDrawBG()) {
-            context.fill(x + 1, y, x + w - 1, y + h, BACKGROUND_COLOR); // Main background
-            context.fill(x, y + 1, x + 1, y + h - 1, BACKGROUND_COLOR); // Left border
-            context.fill(x + w - 1, y + 1, x + w, y + h - 1, BACKGROUND_COLOR); // Right border
+        // Draw the background if enabled.
+        if (shouldDrawBackground()) {
+            drawBackground(context, x, y, width, height);
         }
 
-        int yOffs = y + PADDING; // Start offset for components
-
-        // Render each component
-        for (Component c : components) {
-            c.update();
-            c.render(context, x + PADDING, yOffs);
-            yOffs += c.getHeight() + PADDING; // Increment Y offset by the component's height + padding
+        // Render each component with proper padding.
+        int yOffset = y + PADDING; // Start below the top padding.
+        for (Component component : components) {
+            component.render(context, x + PADDING, yOffset); // Render the component.
+            yOffset += component.getHeight() + PADDING; // Move to the next component position.
         }
+    }
+
+    private void drawBackground(DrawContext context, int x, int y, int width, int height) {
+        context.fill(x + 1, y, x + width - 1, y + height, BACKGROUND_COLOR); // Main background.
+        context.fill(x, y + 1, x + 1, y + height - 1, BACKGROUND_COLOR); // Left border.
+        context.fill(x + width - 1, y + 1, x + width, y + height - 1, BACKGROUND_COLOR); // Right border.
     }
 }

@@ -1,10 +1,8 @@
 package com.hazem.skyplus.utils.hud.components;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A builder class for constructing a {@link Component}.
@@ -12,7 +10,7 @@ import java.util.List;
  * allowing for a flexible and readable way to construct a component with different content.
  */
 public class ComponentBuilder {
-    List<Element> elements = new ArrayList<>();
+    protected final ObjectArrayList<Element> elements = new ObjectArrayList<>();
 
     /**
      * Adds a {@link TextElement} to the builder's list of elements.
@@ -34,14 +32,5 @@ public class ComponentBuilder {
     public ComponentBuilder addIcon(ItemStack itemStack) {
         elements.add(new ItemStackElement(itemStack));
         return this;
-    }
-
-    /**
-     * Builds and returns a new {@link Component} using the elements that have been added to the builder.
-     *
-     * @return The constructed {@link Component}.
-     */
-    public Component build() {
-        return new Component(this);
     }
 }

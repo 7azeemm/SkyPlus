@@ -43,9 +43,9 @@ public class HypixelData {
         ServerInfo serverInfo = handler.getServerInfo();
         if (serverInfo != null) {
             String serverAddress = serverInfo.address;
-            if (serverAddress.contains("hypixel.net")) {
+            if (serverAddress.contains(".hypixel.")) {
                 isInHypixel = true;
-                isInHypixelAlpha = serverAddress.contains("alpha.");
+                isInHypixelAlpha = serverAddress.startsWith("alpha.");
                 sendLocrawRequest();
             }
         }

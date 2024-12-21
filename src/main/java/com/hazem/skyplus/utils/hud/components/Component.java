@@ -1,11 +1,9 @@
 package com.hazem.skyplus.utils.hud.components;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents a UI component consisting of various elements (e.g., text, icons).
@@ -13,9 +11,9 @@ import java.util.List;
  * and size calculations for those elements.
  */
 public class Component {
-    protected static final int PADDING = 4;
-    protected int width, height;
-    private List<Element> elements = new ArrayList<>();
+    private static final int PADDING = 4;
+    private final ObjectArrayList<Element> elements;
+    private int width, height;
 
     /**
      * Constructs a new Component using the provided {@link ComponentBuilder}.
@@ -34,7 +32,7 @@ public class Component {
      * @param text The text to be displayed as an element in the component.
      */
     public Component(Text text) {
-        this.elements.add(new TextElement(text));
+        this.elements = ObjectArrayList.of(new TextElement(text));
         update();
     }
 
@@ -45,7 +43,7 @@ public class Component {
      * @param itemStack The icon to be displayed as an element in the component.
      */
     public Component(ItemStack itemStack) {
-        this.elements.add(new ItemStackElement(itemStack));
+        this.elements = ObjectArrayList.of(new ItemStackElement(itemStack));
         update();
     }
 
@@ -63,7 +61,7 @@ public class Component {
     /**
      * Updates the dimensions of the component based on the size of the elements it contains.
      */
-    public void update() {
+    private void update() {
         width = PADDING;
         height = 0;
 
