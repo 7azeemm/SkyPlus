@@ -24,7 +24,6 @@ public class InitProcessor {
                         try {
                             method.setAccessible(true);
                             method.invoke(null);
-                            logger.info("Successfully invoked @Init method: {} in {}", method.getName(), clazz.getName());
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             logger.error("Failed to invoke @Init method: {} in {}: {}", method.getName(), clazz.getName(), e.getMessage(), e);
                         }

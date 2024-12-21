@@ -16,4 +16,9 @@ public class ChatUtils {
         }
     }
 
+    public static void sendCommand(String text) {
+        if (CLIENT.player != null) {
+            CLIENT.player.networkHandler.sendCommand(text);
+        }
+    }
 }

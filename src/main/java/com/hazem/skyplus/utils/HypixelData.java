@@ -102,7 +102,7 @@ public class HypixelData {
 
     private static void sendLocrawRequest() {
         Scheduler.getInstance().schedule(() -> {
-            ChatUtils.sendMessage("/locraw");
+            ChatUtils.sendCommand("locraw");
         }, LOC_RAW_REQUEST_DELAY);
     }
 
@@ -110,7 +110,7 @@ public class HypixelData {
         Scheduler.getInstance().schedule(() -> {
             if (profileIdRequested) {
                 messagesToSuppress = 2;
-                ChatUtils.sendMessage("/profileid");
+                ChatUtils.sendCommand("profileid");
             }
         }, PROFILE_ID_REQUEST_DELAY);// 8 seconds
     }
