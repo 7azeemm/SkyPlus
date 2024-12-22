@@ -11,7 +11,7 @@ import java.util.List;
 
 public class HUDMaster {
     private static final int TICK_INTERVAL = 1;
-    private static final List<Widget> widgets = new ArrayList<>();
+    private static final List<AbstractWidget> widgets = new ArrayList<>();
 
     @Init(priority = Init.Priority.HIGH, ordinal = 2)
     private static void init() {
@@ -19,12 +19,12 @@ public class HUDMaster {
         HudRenderCallback.EVENT.register(HUDMaster::renderAll);
     }
 
-    public static void addWidget(Widget widget) {
+    public static void addWidget(AbstractWidget widget) {
         widgets.add(widget);
     }
 
     private static void updateAll() {
-        for (Widget widget : widgets) {
+        for (AbstractWidget widget : widgets) {
             if (widget.shouldRender()) {
                 widget.updateFrame();
             }
@@ -32,7 +32,7 @@ public class HUDMaster {
     }
 
     private static void renderAll(DrawContext drawContext, RenderTickCounter tickDelta) {
-        for (Widget widget : widgets) {
+        for (AbstractWidget widget : widgets) {
             if (widget.shouldRender()) {
                 widget.render(drawContext);
             }

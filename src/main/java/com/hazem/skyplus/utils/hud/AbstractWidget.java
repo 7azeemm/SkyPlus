@@ -10,15 +10,11 @@ import net.minecraft.text.Text;
 /**
  * Represents a HUD Widget that can display various components (e.g., text, icons) on the screen.
  */
-public abstract class Widget {
+public abstract class AbstractWidget {
     private static final int BACKGROUND_COLOR = 0xc00c0c0c; // Widget's background color.
     private static final int PADDING = 4; // Padding around and within the widget.
     private final ObjectArrayList<Component> components = new ObjectArrayList<>();
     private int width, height;
-
-    public Widget() {
-        HUDMaster.addWidget(this);
-    }
 
     /**
      * Determines whether the widget should render on the screen.

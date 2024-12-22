@@ -1,5 +1,6 @@
 package com.hazem.skyplus.annotations;
 
+import com.hazem.skyplus.annotations.processors.InitProcessor;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

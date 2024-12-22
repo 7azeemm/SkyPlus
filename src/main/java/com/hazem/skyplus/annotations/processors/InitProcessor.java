@@ -1,6 +1,7 @@
-package com.hazem.skyplus.annotations;
+package com.hazem.skyplus.annotations.processors;
 
 import com.hazem.skyplus.Skyplus;
+import com.hazem.skyplus.annotations.Init;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
