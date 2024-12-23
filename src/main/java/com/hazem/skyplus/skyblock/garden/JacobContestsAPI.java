@@ -55,7 +55,6 @@ public class JacobContestsAPI {
                 Scheduler.getInstance().schedule(JacobContestsAPI::getContestInfo, (int) ((startTime - now) / 50));
             } else if (now >= startTime && now < startTime + CONTEST_DURATION) {
                 activeContest = contest;
-                Scheduler.getInstance().schedule(() -> activeContest = null, (int) (startTime + CONTEST_DURATION - now) / 50);
             }
         }
         if (!nextContestFound) Scheduler.getInstance().schedule(JacobContestsAPI::fetchContests, 20 * 60 * 45);

@@ -111,9 +111,7 @@ public class HypixelData {
     }
 
     private static void sendLocrawRequest() {
-        Scheduler.getInstance().schedule(() -> {
-            ChatUtils.sendCommand("locraw");
-        }, LOC_RAW_REQUEST_DELAY);
+        Scheduler.getInstance().schedule(() -> ChatUtils.sendCommand("locraw"), LOC_RAW_REQUEST_DELAY);
     }
 
     private static void scheduleProfileIdRequest() {
