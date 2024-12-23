@@ -14,4 +14,8 @@ public class ClientPlayNetworkHandlerMixin {
         return false;
     }
 
+    @WrapWithCondition(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;)V"))
+    private boolean suppressUnknownEntityWarning(Logger logger, String message) {
+        return false;
+    }
 }
