@@ -7,10 +7,15 @@
     "defaultRequire": 1
   },
   "client": [
-    "FishingBobberEntityMixin",
-    "YggdrasilServicesKeyInfoMixin",
     "ClientPlayNetworkHandlerMixin",
+    "FishingBobberEntityMixin",
+    "InGameHudMixin",
+    "InventoryScreenMixin",
     "MinecraftClientMixin",
-    "PlayerSkinProviderMixin"
+    "PlayerSkinProviderMixin",
+    "YggdrasilServicesKeyInfoMixin"
+  ],
+  "mixins": [
+    "ScoreboardMixin"
   ]
 }
