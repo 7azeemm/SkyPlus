@@ -42,8 +42,4 @@ public enum Location {
     public static Location from(String id) {
         return LOOKUP_MAP.getOrDefault(id, UNKNOWN);
     }
-
-    public String id() {
-        return this.id;
-    }
 }

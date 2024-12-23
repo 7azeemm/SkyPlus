@@ -5,5 +5,18 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 public class Garden {
 
     @SerialEntry
-    public boolean gardenHUD = false;
+    public JacobContest jacobContest = new JacobContest();
+
+    public static class JacobContest {
+
+        @SerialEntry
+        public boolean enableHUD = true;
+
+        @SerialEntry
+        public boolean enableOutsideGarden = true;
+
+        @SerialEntry
+        public boolean enableBackgroundDisplay = true;
+
+    }
 }
