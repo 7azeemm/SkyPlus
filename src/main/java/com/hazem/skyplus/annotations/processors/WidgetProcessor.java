@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WidgetProcessor {
-    private static final Logger logger = LoggerFactory.getLogger(WidgetProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WidgetProcessor.class);
     private static final String PACKAGE_NAME = "com.hazem." + Skyplus.NAMESPACE;
 
     @Init(priority = Init.Priority.MEDIUM)
@@ -28,7 +28,7 @@ public class WidgetProcessor {
                 if (AbstractWidget.class.isAssignableFrom(clazz) && !Modifier.isAbstract(clazz.getModifiers())) {
                     widgetClasses.add(clazz);
                 } else {
-                    logger.error("Class {} is annotated with @Widget but is either not a subclass of Widget or is abstract.", clazz.getName());
+                    LOGGER.error("Class {} is annotated with @Widget but is either not a subclass of Widget or is abstract.", clazz.getName());
                 }
             }
         }
@@ -39,7 +39,7 @@ public class WidgetProcessor {
                 AbstractWidget widget = (AbstractWidget) widgetClass.getDeclaredConstructor().newInstance();
                 HUDMaster.addWidget(widget);
             } catch (ReflectiveOperationException e) {
-                logger.error("Failed to instantiate widget: {}. Error: {}", widgetClass.getName(), e.getMessage(), e);
+                LOGGER.error("Failed to instantiate widget: {}. Error: {}", widgetClass.getName(), e.getMessage(), e);
             }
         }
     }

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class ClassScanner {
-    private static final Logger logger = LoggerFactory.getLogger(ClassScanner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassScanner.class);
 
     public static List<Class<?>> findClasses(String packageName) {
         List<Class<?>> classes = new ArrayList<>();
@@ -21,13 +21,13 @@ public class ClassScanner {
         URL resource = Thread.currentThread().getContextClassLoader().getResource(path);
 
         if (resource == null) {
-            logger.warn("Package not found: {}", packageName);
+            LOGGER.warn("Package not found: {}", packageName);
             return classes; // Package not found
         }
 
         File root = new File(resource.getFile());
         if (!root.exists() || !root.isDirectory()) {
-            logger.warn("Invalid package directory: {}", root.getAbsolutePath());
+            LOGGER.warn("Invalid package directory: {}", root.getAbsolutePath());
             return classes; // Invalid package directory
         }
 
@@ -44,11 +44,11 @@ public class ClassScanner {
                         try {
                             classes.add(Class.forName(className));
                         } catch (Exception e) {
-                            logger.error("Unexpected error while loading class: {}", className, e);
+                            LOGGER.error("Unexpected error while loading class: {}", className, e);
                         }
                     });
         } catch (IOException e) {
-            logger.error("Error reading directory: {}", root.getAbsolutePath(), e);
+            LOGGER.error("Error reading directory: {}", root.getAbsolutePath(), e);
         }
         return classes;
     }

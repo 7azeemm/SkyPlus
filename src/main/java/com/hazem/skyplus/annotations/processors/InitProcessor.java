@@ -12,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class InitProcessor {
-    private static final Logger logger = LoggerFactory.getLogger(InitProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InitProcessor.class);
     private static final String PACKAGE_NAME = "com.hazem." + Skyplus.NAMESPACE;
 
     public static void process() {
@@ -29,7 +29,7 @@ public class InitProcessor {
                         Init annotation = method.getAnnotation(Init.class);
                         initMethods.add(new AnnotatedMethod(method, annotation.priority(), annotation.ordinal()));
                     } else {
-                        logger.error("Method {} in {} is annotated with @Init but is not static or has parameters.",
+                        LOGGER.error("Method {} in {} is annotated with @Init but is not static or has parameters.",
                                 method.getName(), clazz.getName());
                     }
                 }
@@ -47,7 +47,7 @@ public class InitProcessor {
                 annotatedMethod.method.setAccessible(true);
                 annotatedMethod.method.invoke(null);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                logger.error("Failed to invoke @Init method: {} in {}: {}",
+                LOGGER.error("Failed to invoke @Init method: {} in {}: {}",
                         annotatedMethod.method.getName(),
                         annotatedMethod.method.getDeclaringClass().getName(),
                         e.getMessage(), e);
