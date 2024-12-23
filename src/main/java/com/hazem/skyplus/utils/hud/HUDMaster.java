@@ -15,7 +15,7 @@ public class HUDMaster {
 
     @Init(priority = Init.Priority.HIGH, ordinal = 2)
     private static void init() {
-        Scheduler.getInstance().scheduleCyclic(HUDMaster::updateAll, TICK_INTERVAL);
+        Scheduler.getInstance().scheduleCyclic(HUDMaster::updateAll, 0, TICK_INTERVAL);
         HudRenderCallback.EVENT.register(HUDMaster::renderAll);
     }
 

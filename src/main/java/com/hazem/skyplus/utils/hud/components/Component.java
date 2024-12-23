@@ -62,12 +62,12 @@ public class Component {
      * Updates the dimensions of the component based on the size of the elements it contains.
      */
     private void update() {
-        width = PADDING;
+        width = PADDING; // Start width as 0 to calculate based on content.
         height = 0;
 
         for (Element element : elements) {
-            width += element.getWidth();
-            height = Math.max(height, element.getHeight());
+            width += element.getWidth(); // Add element width.
+            height = Math.max(height, element.getHeight()); // Max height of all elements.
         }
     }
 

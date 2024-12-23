@@ -46,7 +46,7 @@ public class Scheduler {
      * @param delay The delay in ticks before the task is executed.
      */
     public void schedule(Runnable task, int delay) {
-        addTask(task, delay, false, false);
+        addTask(task, delay, 0, false, false);
     }
 
     /**
@@ -56,31 +56,35 @@ public class Scheduler {
      * @param delay The delay in ticks before the task is executed.
      */
     public void scheduleAsync(Runnable task, int delay) {
-        addTask(task, delay, false, true);
+        addTask(task, delay, 0, false, true);
     }
 
     /**
      * Schedules a cyclic task to run at regular intervals synchronously.
+     * The first execution is delayed by the given delay, and subsequent executions will occur at the specified interval.
      *
      * @param task          The task to run.
-     * @param intervalTicks The interval in ticks between task executions.
+     * @param delay         The initial delay in ticks before the task is executed.
+     * @param intervalTicks The interval in ticks between subsequent task executions.
      */
-    public void scheduleCyclic(Runnable task, int intervalTicks) {
-        addTask(task, intervalTicks, true, false);
+    public void scheduleCyclic(Runnable task, int delay, int intervalTicks) {
+        addTask(task, delay, intervalTicks, true, false);
     }
 
     /**
      * Schedules a cyclic task to run at regular intervals asynchronously.
+     * The first execution is delayed by the given delay, and subsequent executions will occur at the specified interval.
      *
-     * @param task         The task to run.
-     * @param intervalTicks The interval in ticks between task executions.
+     * @param task          The task to run.
+     * @param delay         The initial delay in ticks before the task is executed.
+     * @param intervalTicks The interval in ticks between subsequent task executions.
      */
-    public void scheduleCyclicAsync(Runnable task, int intervalTicks) {
-        addTask(task, intervalTicks, true, true);
+    public void scheduleCyclicAsync(Runnable task, int delay, int intervalTicks) {
+        addTask(task, delay, intervalTicks, true, true);
     }
 
-    private void addTask(Runnable task, int intervalTicks, boolean cyclic, boolean async) {
-        tasks.add(new ScheduledTask(task, intervalTicks, cyclic, async, currentTick + intervalTicks));
+    private void addTask(Runnable task, int delay, int intervalTicks, boolean cyclic, boolean async) {
+        tasks.add(new ScheduledTask(task, intervalTicks, cyclic, async, currentTick + delay));
     }
 
     public void tick(MinecraftClient client) {

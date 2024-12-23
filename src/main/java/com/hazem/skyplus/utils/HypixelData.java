@@ -13,6 +13,8 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
 
+import java.util.List;
+
 public class HypixelData {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final ObjectArrayList<String> SCOREBOARD_LINES = new ObjectArrayList<>();
@@ -35,7 +37,15 @@ public class HypixelData {
         ClientPlayConnectionEvents.JOIN.register((handler, packetSender, client) -> onJoin(handler));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
         ClientReceiveMessageEvents.ALLOW_GAME.register(HypixelData::onChatMessage);
-        Scheduler.getInstance().scheduleCyclic(HypixelData::getScoreboardLines, 20);
+        Scheduler.getInstance().scheduleCyclic(HypixelData::getScoreboardLines, 0,20);
+    }
+
+    public static boolean isInIsland(List<Location> islands) {
+        return islands.contains(location);
+    }
+
+    public static boolean isInIsland(Location island) {
+        return location.equals(island);
     }
 
     private static void onJoin(ClientPlayNetworkHandler handler) {
@@ -81,7 +91,7 @@ public class HypixelData {
         return true;
     }
 
-    public static void getScoreboardLines() {
+    private static void getScoreboardLines() {
         if (CLIENT.player == null) return;
         Scoreboard scoreboard = CLIENT.player.getScoreboard();
         ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
