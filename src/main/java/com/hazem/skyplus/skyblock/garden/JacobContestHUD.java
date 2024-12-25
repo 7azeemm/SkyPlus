@@ -9,13 +9,11 @@ import com.hazem.skyplus.utils.hud.components.ComponentBuilder;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
 @Widget
 public class JacobContestHUD extends AbstractWidget {
-    private static final long CONTEST_DURATION_MILLIS = Duration.ofMinutes(20).toMillis();
 
     @Override
     protected boolean shouldRender() {
@@ -32,7 +30,7 @@ public class JacobContestHUD extends AbstractWidget {
         long now = Instant.now().toEpochMilli();
 
         if (JacobContestsAPI.activeContest != null) {
-            long timeLeftMillis = JacobContestsAPI.activeContest.time() + CONTEST_DURATION_MILLIS - now;
+            long timeLeftMillis = JacobContestsAPI.activeContest.time() + JacobContestsAPI.CONTEST_DURATION - now;
             renderContest(Text.literal("Active:").formatted(Formatting.GREEN), timeLeftMillis, JacobContestsAPI.activeContest.crops());
         }
 
@@ -56,6 +54,7 @@ public class JacobContestHUD extends AbstractWidget {
         );
     }
 
+    //TODO: add to Formatting class
     private String formatTime(long millis) {
         if (millis <= 0 && JacobContestsAPI.activeContest != null) JacobContestsAPI.activeContest = null;
         long seconds = millis / 1000;

@@ -9,13 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(Scoreboard.class)
 public class ScoreboardMixin {
 
-    @WrapWithCondition(
-            method = "addTeam",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V"
-            )
-    )
+    @WrapWithCondition(method = "addTeam", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V"), remap = false)
     private boolean suppressTeamWarning(Logger logger, String message, Object param) {
         return false;
     }

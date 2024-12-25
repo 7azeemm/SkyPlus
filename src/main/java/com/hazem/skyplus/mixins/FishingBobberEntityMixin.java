@@ -12,7 +12,6 @@ public class FishingBobberEntityMixin {
 
     @Inject(method = "onSpawnPacket", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false), cancellable = true)
     private void suppressFishingHookErrorLog(EntitySpawnS2CPacket packet, CallbackInfo ci) {
-        // Cancel the error log when trying to recreate the fishing hook entity with an invalid owner
         ci.cancel();
     }
 }

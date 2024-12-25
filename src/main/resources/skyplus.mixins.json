@@ -11,11 +11,10 @@
     "FishingBobberEntityMixin",
     "InGameHudMixin",
     "InventoryScreenMixin",
+    "ItemStackMixin",
     "MinecraftClientMixin",
     "PlayerSkinProviderMixin",
+    "ScoreboardMixin",
     "YggdrasilServicesKeyInfoMixin"
-  ],
-  "mixins": [
-    "ScoreboardMixin"
   ]
 }

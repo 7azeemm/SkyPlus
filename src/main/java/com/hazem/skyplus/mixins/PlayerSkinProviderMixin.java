@@ -12,5 +12,4 @@ public class PlayerSkinProviderMixin {
     private static boolean suppressInvalidSignatureWarnings(Logger logger, String message, Object profileId) {
         return false;
     }
-
 }

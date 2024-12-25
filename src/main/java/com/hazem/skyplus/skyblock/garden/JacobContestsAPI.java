@@ -10,6 +10,7 @@ import com.mojang.serialization.JsonOps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Map;
 public class JacobContestsAPI {
     private static final Logger LOGGER = LoggerFactory.getLogger(JacobContestsAPI.class);
     private static final String JSON_URL = "https://api.elitebot.dev/contests/at/now";
-    private static final long CONTEST_DURATION = 20 * 60 * 1000; // 20 minutes in milliseconds
+    public static final long CONTEST_DURATION = Duration.ofMinutes(20).toMillis();
     public static final List<Contest> CONTESTS = new ArrayList<>();
     public static Contest activeContest;
     public static Contest nextContest;
