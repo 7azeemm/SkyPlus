@@ -16,12 +16,14 @@ public class ItemStackMixin implements SkyblockItem {
     @Unique
     private Boolean isSkyblockItem;
 
+    @Unique
     @Override
     public String getItemId() {
         if (itemId != null) return itemId;
         return itemId = ItemUtils.getItemId((ComponentHolder) this);
     }
 
+    @Unique
     @Override
     public boolean isSkyblockItem() {
         if (isSkyblockItem != null) return isSkyblockItem;

@@ -1,4 +1,4 @@
-package com.hazem.skyplus.data;
+package com.hazem.skyplus.data.itemPrice;
 
 import com.hazem.skyplus.annotations.Init;
 import com.hazem.skyplus.constants.ItemRarity;

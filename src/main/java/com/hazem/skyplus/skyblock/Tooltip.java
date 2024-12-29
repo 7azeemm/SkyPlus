@@ -1,7 +1,7 @@
 package com.hazem.skyplus.skyblock;
 
 import com.hazem.skyplus.annotations.Init;
-import com.hazem.skyplus.data.PriceResult;
+import com.hazem.skyplus.data.itemPrice.PriceResult;
 import com.hazem.skyplus.utils.ItemUtils;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.text.Text;
@@ -22,12 +22,13 @@ public class Tooltip {
     @Init
     public static void tooltip() {
         ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
-            if (!stack.isSkyblockItem()) return;
-
             String itemId = stack.getItemId();
 
             Optional<PriceResult> priceResult = ItemUtils.getItemPrice(itemId);
             priceResult.ifPresent(result -> lines.add(Text.literal("§aPrice: " + NUMBER_FORMATTER_S.format(result.price()) + " coins")));
+
+            Optional<PriceResult> npcPrice = ItemUtils.getNPCPrice(itemId);
+            npcPrice.ifPresent(result -> lines.add(Text.literal("§aNPC Price: " + NUMBER_FORMATTER_S.format(result.price()) + " coins")));
         });
     }
 }
