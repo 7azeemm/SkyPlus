@@ -14,7 +14,7 @@ public class Bazaar {
     private static final int REFRESH_INTERVAL = 20 * 60 * 2;
     public static volatile BazaarResponse data;
 
-    @Init
+    @Init(priority = Init.Priority.MEDIUM)
     public static void bazaarRefresher() {
         Scheduler.getInstance().scheduleCyclicAsync(() -> APIUtils.fetchJson(JSON_URL)
                 .thenApply(json -> {

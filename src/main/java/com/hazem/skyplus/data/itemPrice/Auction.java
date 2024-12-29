@@ -18,7 +18,7 @@ public class Auction {
     private static final int REFRESH_INTERVAL = 20 * 60 * 2;
     public static volatile Object2DoubleOpenHashMap<String> data;
 
-    @Init
+    @Init(priority = Init.Priority.MEDIUM)
     public static void auctionRefresher() {
         Scheduler.getInstance().scheduleCyclicAsync(() -> APIUtils.fetchJson(JSON_URL)
                 .thenAccept(json -> {

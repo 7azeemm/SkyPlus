@@ -13,10 +13,10 @@ public class Npc {
     private static final Logger LOGGER = LoggerFactory.getLogger(Npc.class);
     private static final String JSON_URL = "https://hysky.de/api/npcprice";
     private static final int RETRY_INTERVAL = 20 * 30;
-    private static final AtomicInteger retries = new AtomicInteger(3);
+    private static final AtomicInteger RETRIES = new AtomicInteger(3);
     public static volatile Object2DoubleOpenHashMap<String> data;
 
-    @Init
+    @Init(priority = Init.Priority.MEDIUM)
     public static void loadNpcPricesData() {
         Scheduler.getInstance().scheduleAsync(() -> APIUtils.fetchJson(JSON_URL)
                 .thenAccept(json -> {
@@ -44,7 +44,7 @@ public class Npc {
     }
 
     private static void scheduleRetry() {
-        int remainingRetries = retries.decrementAndGet();
+        int remainingRetries = RETRIES.decrementAndGet();
         if (remainingRetries > 0) {
             LOGGER.error("Retrying to fetch NPC prices data.");
             Scheduler.getInstance().scheduleAsync(Npc::loadNpcPricesData, RETRY_INTERVAL);
