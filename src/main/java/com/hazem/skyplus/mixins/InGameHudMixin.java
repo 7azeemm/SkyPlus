@@ -13,6 +13,6 @@ public class InGameHudMixin {
 
     @Redirect(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Ljava/util/Collection;isEmpty()Z"))
     private boolean disablePotionOverlay(Collection<?> collection) {
-        return ConfigManager.getHandler().misc.disableStatusEffectsOverlay;
+        return ConfigManager.getConfig().misc.disableStatusEffectsOverlay;
     }
 }

@@ -1,22 +1,19 @@
 package com.hazem.skyplus.config.categories;
 
-import com.hazem.skyplus.config.SkyPlusConfig;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
+import com.hazem.skyplus.config.ConfigManager;
+import com.hazem.skyplus.config.controllers.BooleanController;
+import com.hazem.skyplus.config.gui.Category;
+import com.hazem.skyplus.config.gui.Option;
 import net.minecraft.text.Text;
 
 public class MiscCategory {
 
-    public static ConfigCategory create(SkyPlusConfig defaults, SkyPlusConfig config) {
-        return ConfigCategory.createBuilder()
-                .name(Text.of("Misc"))
-                .option(Option.<Boolean>createBuilder()
+    public static Category create() {
+        return Category.createBuilder()
+                .name(Text.of("Miscellaneous"))
+                .option(Option.createBuilder()
                         .name(Text.of("Disable Status Effects Overlay"))
-                        .binding(defaults.misc.disableStatusEffectsOverlay,
-                                () -> config.misc.disableStatusEffectsOverlay,
-                                newValue -> config.misc.disableStatusEffectsOverlay = newValue)
-                        .controller(BooleanControllerBuilder::create)
+                        .controller(new BooleanController(newValue -> ConfigManager.getConfig().misc.disableStatusEffectsOverlay = newValue, ConfigManager.getConfig().misc.disableStatusEffectsOverlay))
                         .build())
                 .build();
     }

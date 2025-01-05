@@ -17,12 +17,12 @@ public class JacobContestHUD extends AbstractWidget {
 
     @Override
     protected boolean shouldRender() {
-        return ConfigManager.getHandler().garden.jacobContest.enableHUD && (ConfigManager.getHandler().garden.jacobContest.enableOutsideGarden ? HypixelData.isInSkyblock : HypixelData.isInIsland(Location.GARDEN));
+        return ConfigManager.getConfig().garden.jacobContest.enableHUD && (ConfigManager.getConfig().garden.jacobContest.enableOutsideGarden ? HypixelData.isInSkyblock : HypixelData.isInIsland(Location.GARDEN));
     }
 
     @Override
     protected boolean shouldDrawBackground() {
-        return ConfigManager.getHandler().garden.jacobContest.enableBackgroundDisplay;
+        return ConfigManager.getConfig().garden.jacobContest.enableBackgroundDisplay;
     }
 
     @Override

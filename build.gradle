@@ -18,16 +18,6 @@ repositories {
     // for more information about repositories.
     mavenCentral()
 
-    // YACL
-    maven {
-        url "https://maven.isxander.dev/releases"
-
-        content {
-            includeGroup "dev.isxander"
-            includeGroup "org.quiltmc.parsers"
-        }
-    }
-
     // ModMenu
     maven {
         url "https://maven.terraformersmc.com/releases"
@@ -46,9 +36,6 @@ dependencies {
 
     // Fabric API
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    // YACL
-    include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
 
     // Mod Menu
     modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"

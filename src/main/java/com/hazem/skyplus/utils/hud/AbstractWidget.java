@@ -107,6 +107,7 @@ public abstract class AbstractWidget {
         components.add(new Component(itemStack));
     }
 
+    //TODO: fix size calculations (should be in init method)
     final void render(DrawContext context) {
         // Get the current window size
         int windowWidth = CLIENT.getWindow().getWidth();

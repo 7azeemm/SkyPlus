@@ -13,6 +13,6 @@ public class InventoryScreenMixin {
 
     @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/StatusEffectsDisplay;drawStatusEffects(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
     private boolean shouldRenderStatusEffects(StatusEffectsDisplay instance, DrawContext context, int mouseX, int mouseY, float tickDelta) {
-        return !ConfigManager.getHandler().misc.disableStatusEffectsOverlay;
+        return !ConfigManager.getConfig().misc.disableStatusEffectsOverlay;
     }
 }
