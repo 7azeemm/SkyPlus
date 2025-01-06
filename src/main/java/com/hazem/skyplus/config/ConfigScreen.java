@@ -1,20 +1,23 @@
 package com.hazem.skyplus.config;
 
 import com.hazem.skyplus.Skyplus;
-import com.hazem.skyplus.config.gui.Category;
-import com.hazem.skyplus.config.gui.Group;
-import com.hazem.skyplus.config.gui.GuiArea;
-import com.hazem.skyplus.config.gui.Option;
+import com.hazem.skyplus.config.gui.*;
 import com.hazem.skyplus.utils.RenderHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigScreen extends Screen {
+    private static final Pair<Identifier, String> MODRINTH = new Pair<>(Identifier.of(Skyplus.NAMESPACE, "textures/socials/modrinth.png"), "");
+    private static final Pair<Identifier, String> DISCORD = new Pair<>(Identifier.of(Skyplus.NAMESPACE, "textures/socials/discord.png"), "");
+    private static final Pair<Identifier, String> GITHUB = new Pair<>(Identifier.of(Skyplus.NAMESPACE, "textures/socials/github.png"), "");
     private static final float WIDTH_PERCENTAGE = 0.65f;
     private static final float HEIGHT_PERCENTAGE = 0.8f;
     private static final int BACKGROUND_COLOR = 0x90000000;
@@ -22,11 +25,12 @@ public class ConfigScreen extends Screen {
     private static final int LEFT_PADDING = 8;
     private static final int PADDING = 4;
     private static final int SCROLL_STEP = 20;
-    private static int selectedCategory = 0;
-    private final Screen parent;
-    private final List<Category> categories;
     private final int SCROLLBAR_WIDTH = 3;
     private final int SCROLLBAR_OFFSET = 4;
+    private static int selectedCategory = 0;
+    private final List<SocialButton> socialButtons = new ArrayList<>();
+    private final Screen parent;
+    private final List<Category> categories;
     private int x, y;
     private int guiWidth, guiHeight;
     private GuiArea topArea;
@@ -40,6 +44,7 @@ public class ConfigScreen extends Screen {
     private int barX, barY, barHeight;
     private boolean scrollbarVisible = false;
     private boolean isDragging = false;
+    //CHECK NAME CONVERSTIONS
 
     protected ConfigScreen(Screen parent, List<Category> categories) {
         super(Text.of("SkyPlus Config"));
@@ -65,6 +70,11 @@ public class ConfigScreen extends Screen {
 
         versionX = topArea.getX() + topArea.getWidth() / 2 + this.textRenderer.getWidth(this.title) + 4;
         versionY = topArea.getY() + topArea.getHeight() / 2 + this.textRenderer.fontHeight / 2;
+
+        socialButtons.clear();
+        socialButtons.add(new SocialButton(MODRINTH, topArea.getRight() - 18, topArea.getY() + 4, 16, 16));
+        socialButtons.add(new SocialButton(DISCORD, topArea.getRight() - 18 * 2, topArea.getY() + 4, 16, 16));
+        socialButtons.add(new SocialButton(GITHUB, topArea.getRight() - 18 * 3, topArea.getY() + 4, 16, 16));
 
         // Update categories and options
         int categoriesHeight = 0;
@@ -187,6 +197,11 @@ public class ConfigScreen extends Screen {
         context.drawVerticalLine(leftArea.getRight(), leftArea.getY() - 1, leftArea.getBottom(), BORDER_COLOR);
 
         RenderHelper.drawBorder(context, x, y, x + guiWidth, y + guiHeight, BORDER_COLOR);
+
+        // Render icons
+        for (SocialButton socialButton : socialButtons) {
+            socialButton.render(context);
+        }
     }
 
     private void updateScrollbarProperties() {
@@ -276,11 +291,18 @@ public class ConfigScreen extends Screen {
             }
         }
 
+        for (SocialButton socialButton : socialButtons) {
+            if (socialButton.buttonClicked(mouseX, mouseY, scrollOffset)) {
+                socialButton.onClick(this);
+            }
+        }
+
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     public void close() {
         MinecraftClient.getInstance().setScreen(parent);
+        ConfigManager.saveConfig();
     }
 }

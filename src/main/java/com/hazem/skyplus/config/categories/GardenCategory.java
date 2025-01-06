@@ -16,18 +16,24 @@ public class GardenCategory {
                         .name(Text.of("Jacob's Contest"))
                         .option(Option.createBuilder()
                                 .name(Text.of("Enable Jacob's Contest HUD"))
-                                .controller(new BooleanController(newValue -> ConfigManager.getConfig().misc.disableStatusEffectsOverlay = newValue, ConfigManager.getConfig().misc.disableStatusEffectsOverlay))
                                 .description(Text.of("Displays a HUD showing the details of the active and upcoming Jacob's Contest."))
+                                .controller(new BooleanController(
+                                        newValue -> ConfigManager.getConfig().garden.jacobContest.enableHUD = newValue,
+                                        ConfigManager.getConfig().garden.jacobContest.enableHUD))
                                 .build())
                         .option(Option.createBuilder()
                                 .name(Text.of("Enable HUD Outside the Garden"))
                                 .description(Text.of("Enables the HUD to be visible throughout SkyBlock, not just in the Garden."))
-                                .controller(new BooleanController(newValue -> ConfigManager.getConfig().misc.disableStatusEffectsOverlay = newValue, ConfigManager.getConfig().misc.disableStatusEffectsOverlay))
+                                .controller(new BooleanController(
+                                        newValue -> ConfigManager.getConfig().garden.jacobContest.enableOutsideGarden = newValue,
+                                        ConfigManager.getConfig().garden.jacobContest.enableOutsideGarden))
                                 .build())
                         .option(Option.createBuilder()
                                 .name(Text.of("Enable Background Display"))
                                 .description(Text.of("Toggles the display of a background behind the Jacob's Contest HUD."))
-                                .controller(new BooleanController(newValue -> ConfigManager.getConfig().misc.disableStatusEffectsOverlay = newValue, ConfigManager.getConfig().misc.disableStatusEffectsOverlay))
+                                .controller(new BooleanController(
+                                        newValue -> ConfigManager.getConfig().garden.jacobContest.enableBackgroundDisplay = newValue,
+                                        ConfigManager.getConfig().garden.jacobContest.enableBackgroundDisplay))
                                 .build())
                         .build())
                 .build();

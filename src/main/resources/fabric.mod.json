@@ -3,10 +3,13 @@
   "id": "skyplus",
   "version": "${version}",
   "name": "SkyPlus",
-  "description": "",
+  "description": "Hypixel Skyblock utility mod for the latest version of minecraft",
   "authors": ["7azem"],
-  "contact": {},
-  "license": "All-Rights-Reserved",
+  "contact": {
+    "sources": "https://github.com/7azeemm/SkyPlus",
+    "issues": "https://github.com/7azeemm/SkyPlus/issues"
+  },
+  "license": "",
   "environment": "client",
   "entrypoints": {
     "client": [
@@ -27,7 +30,7 @@
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.discord": "",
+        "modmenu.discord": "https://discord.gg/Bb6z9Hymv6",
         "modmenu.modrinth": ""
       }
     },

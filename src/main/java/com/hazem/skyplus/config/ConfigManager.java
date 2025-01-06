@@ -51,7 +51,7 @@ public class ConfigManager {
                 )))));
     }
 
-    private static void saveConfig() {
+    static void saveConfig() {
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             GSON.toJson(config, writer);
         } catch (IOException e) {
