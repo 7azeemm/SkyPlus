@@ -1,18 +1,20 @@
 package com.hazem.skyplus.config.gui;
 
 import com.hazem.skyplus.config.controllers.Controller;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
+import com.hazem.skyplus.utils.RenderHelper;
+import com.hazem.skyplus.utils.gui.Element;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
-public class Option {
+public class Option extends Element {
+    private final static int BACKGROUND_COLOR = 0x80141414;
+    private final static int BORDER_COLOR = 0xFF000000;
+    private final static int NAME_COLOR = 0xFFFFFF;
+    private final static int DESCRIPTION_COLOR = 0x737373;
     private final static int PADDING = 4;
     private final Text name;
     private final Text description;
     private final Controller controller;
-    private int x, y;
-    private int right, bottom;
-    private int width, height;
     private int nameX, nameY;
     private int descriptionX, descriptionY;
     private int maxWidth;
@@ -27,32 +29,37 @@ public class Option {
         return new OptionBuilder();
     }
 
-    public void setPosition(int x, int y, int width) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
+    @Override
+    public void render(DrawContext context) {
+        RenderHelper.drawBackgroundWithBorder(context, x, y, right, bottom, BACKGROUND_COLOR, BORDER_COLOR);
+        context.drawWrappedText(this.textRenderer, name, nameX, nameY, maxWidth, NAME_COLOR, false);
+        if (hasDescription())
+            context.drawWrappedTextWithShadow(this.textRenderer, description, descriptionX, descriptionY, maxWidth, DESCRIPTION_COLOR);
+    }
+
+    @Override
+    public void init(int x, int y, int width) {
         this.maxWidth = width - controller.getMinWidth();
-        this.height = calculateHeight();
-        this.right = x + width;
-        this.bottom = y + height;
-        this.controller.init(this);
+        super.init(x, y, width);
+        height = calculateHeight();
+        bottom = y + height;
+        controller.init(this);
     }
 
     private int calculateHeight() {
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         int height = 0;
 
         height += 2; // Border's lines (Top and Bottom)
         height += PADDING; // Top padding
 
-        this.nameY = y + height;
-        this.nameX = x + PADDING;
-        height += textRenderer.getWrappedLinesHeight(name, maxWidth);
+        nameY = y + height;
+        nameX = x + PADDING;
+        height += this.textRenderer.getWrappedLinesHeight(name, maxWidth);
 
         if (hasDescription()) {
-            this.descriptionY = y + height;
-            this.descriptionX = x + PADDING;
-            height += textRenderer.getWrappedLinesHeight(description, maxWidth);
+            descriptionY = y + height;
+            descriptionX = x + PADDING;
+            height += this.textRenderer.getWrappedLinesHeight(description, maxWidth);
         }
 
         height += PADDING; // Bottom padding
@@ -64,56 +71,12 @@ public class Option {
         return maxWidth;
     }
 
-    public int getNameY() {
-        return nameY;
-    }
-
-    public int getDescriptionY() {
-        return descriptionY;
-    }
-
-    public int getDescriptionX() {
-        return descriptionX;
-    }
-
-    public int getNameX() {
-        return nameX;
-    }
-
-    public Text getName() {
-        return name;
-    }
-
-    public Text getDescription() {
-        return description;
-    }
-
     public boolean hasDescription() {
         return description != null;
     }
 
     public Controller getController() {
         return controller;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getRight() {
-        return right;
-    }
-
-    public int getBottom() {
-        return bottom;
-    }
-
-    public int getHeight() {
-        return height;
     }
 
     public static class OptionBuilder {

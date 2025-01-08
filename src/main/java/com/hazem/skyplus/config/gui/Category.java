@@ -1,15 +1,20 @@
 package com.hazem.skyplus.config.gui;
 
+import com.hazem.skyplus.utils.gui.ClickableElement;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Category {
+public class Category extends ClickableElement {
+    private static final int SELECTION_COLOR = 0xFFFFFF;
+    private static final int DEFAULT_COLOR = 0xAAAAAA;
     private final Text name;
     private final List<Group> groups;
-    private final List<Option> options; // Standalone options not tied to a group
-    private int titleX, titleY;
+    private final List<Option> options;
+    private boolean visible = false;
 
     public Category(CategoryBuilder builder) {
         this.name = builder.name;
@@ -21,21 +26,36 @@ public class Category {
         return new CategoryBuilder();
     }
 
-    public void setTitlePosition(int titleX, int titleY) {
-        this.titleX = titleX;
-        this.titleY = titleY;
+    @Override
+    public void render(DrawContext context) {
+        int color = isVisible() ? SELECTION_COLOR : DEFAULT_COLOR;
+        Text categoryName = visible ? name.copyContentOnly().formatted(Formatting.UNDERLINE) : name;
+
+        context.drawCenteredTextWithShadow(this.textRenderer, categoryName, x, y, color);
     }
 
-    public int getTitleX() {
-        return titleX;
+    @Override
+    public void init(int x, int y) {
+        super.init(x, y, this.textRenderer.getWidth(name), this.textRenderer.fontHeight);
     }
 
-    public int getTitleY() {
-        return titleY;
+    @Override
+    public boolean isHovered(double mouseX, double mouseY) {
+        int textWidth = width + 1;
+        int textHeight = height + 1;
+        int textX = x - textWidth / 2 - 1;
+        int textY = y - 1;
+
+        return mouseX >= textX && mouseX <= textX + textWidth && mouseY >= textY && mouseY <= textY + textHeight;
     }
 
     public Text getName() {
         return name;
+    }
+
+    @Override
+    public void onClick() {
+        visible = true;
     }
 
     public List<Group> getGroups() {
@@ -44,6 +64,14 @@ public class Category {
 
     public List<Option> getOptions() {
         return options;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisibility(boolean visible) {
+        this.visible = visible;
     }
 
     public static class CategoryBuilder {

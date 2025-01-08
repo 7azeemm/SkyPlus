@@ -1,17 +1,18 @@
 package com.hazem.skyplus.config.gui;
 
-import net.minecraft.client.MinecraftClient;
+import com.hazem.skyplus.utils.gui.Element;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Group {
+public class Group extends Element {
+    private static final int NAME_COLOR = 0xAAAAAA;
+    private static final int LINE_COLOR = 0xFFAAAAAA;
     private final Text name;
     private final List<Option> options;
-    private int titleX, titleY;
     private int left, right;
-    private int titleWidth;
 
     public Group(GroupBuilder builder) {
         this.name = builder.name;
@@ -22,36 +23,21 @@ public class Group {
         return new GroupBuilder();
     }
 
-    public void setTitlePosition(int titleX, int titleY, int left, int right) {
-        this.titleX = titleX;
-        this.titleY = titleY;
+    public void setLinePosition(int left, int right) {
         this.left = left;
         this.right = right;
-        this.titleWidth = MinecraftClient.getInstance().textRenderer.getWidth(name);
     }
 
-    public int getTitleWidth() {
-        return titleWidth;
+    @Override
+    public void init(int x, int y) {
+        super.init(x, y, this.textRenderer.getWidth(name), this.textRenderer.fontHeight);
     }
 
-    public int getTitleX() {
-        return titleX;
-    }
-
-    public int getTitleY() {
-        return titleY;
-    }
-
-    public int getLeft() {
-        return left;
-    }
-
-    public int getRight() {
-        return right;
-    }
-
-    public Text getName() {
-        return name;
+    @Override
+    public void render(DrawContext context) {
+        context.drawCenteredTextWithShadow(this.textRenderer, name, x, y, NAME_COLOR);
+        context.drawHorizontalLine(left, x - width / 2 - 5, y + height / 2, LINE_COLOR);
+        context.drawHorizontalLine(x + width / 2 + 3, right, y + height / 2, LINE_COLOR);
     }
 
     public List<Option> getGroups() {

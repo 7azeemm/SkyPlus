@@ -1,15 +1,34 @@
-package com.hazem.skyplus.config.gui;
+package com.hazem.skyplus.utils.gui;
 
-public class GuiArea {
-    private final int x, y, right, bottom, width, height;
+public class Region {
+    protected int x, y, right, bottom, width, height;
 
-    public GuiArea(int x, int y, int width, int height) {
+    public Region() {
+    }
+
+    public Region(int x, int y, int width, int height) {
+        init(x, y, width, height);
+    }
+
+    public void init(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.right = x + width;
         this.bottom = y + height;
+    }
+
+    public void init(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void init(int x, int y, int width) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.right = x + width;
     }
 
     public boolean contains(double mouseX, double mouseY) {

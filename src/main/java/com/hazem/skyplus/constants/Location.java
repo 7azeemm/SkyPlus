@@ -1,4 +1,4 @@
-package com.hazem.skyplus.utils;
+package com.hazem.skyplus.constants;
 
 import java.util.HashMap;
 import java.util.Map;

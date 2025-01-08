@@ -36,7 +36,7 @@ public class BooleanController extends Controller {
     }
 
     @Override
-    public void render(DrawContext context, Option option) {
+    public void render(DrawContext context) {
         int bgColor = toggle ? TRUE_COLOR : FALSE_COLOR;
         int targetX = toggle ? x + width / 2 : x + 1;
 
@@ -45,13 +45,9 @@ public class BooleanController extends Controller {
     }
 
     @Override
-    public boolean buttonClicked(double mouseX, double mouseY, float scrollOffset) {
-        if (isHovered(mouseX, mouseY, scrollOffset)) {
-            this.toggle = !toggle;
-            this.consumer.accept(toggle);
-            return true;
-        }
-        return false;
+    public void onClick() {
+        this.toggle = !toggle;
+        this.consumer.accept(toggle);
     }
 
     @Override

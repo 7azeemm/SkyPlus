@@ -2,8 +2,8 @@ package com.hazem.skyplus.skyblock.garden;
 
 import com.hazem.skyplus.annotations.Widget;
 import com.hazem.skyplus.config.ConfigManager;
+import com.hazem.skyplus.constants.Location;
 import com.hazem.skyplus.utils.HypixelData;
-import com.hazem.skyplus.utils.Location;
 import com.hazem.skyplus.utils.hud.AbstractWidget;
 import com.hazem.skyplus.utils.hud.components.ComponentBuilder;
 import net.minecraft.text.Text;
