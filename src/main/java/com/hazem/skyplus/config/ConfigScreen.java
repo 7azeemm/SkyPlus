@@ -2,6 +2,7 @@ package com.hazem.skyplus.config;
 
 import com.hazem.skyplus.Skyplus;
 import com.hazem.skyplus.config.gui.*;
+import com.hazem.skyplus.utils.ModUtils;
 import com.hazem.skyplus.utils.RenderHelper;
 import com.hazem.skyplus.utils.gui.Region;
 import net.minecraft.client.MinecraftClient;
@@ -77,9 +78,9 @@ public class ConfigScreen extends Screen {
         versionY = topArea.getY() + topArea.getHeight() / 2 + this.textRenderer.fontHeight / 2;
 
         socialButtons.clear();
-        socialButtons.add(new SocialButton(MODRINTH_ICON, "", topArea.getRight() - (ICON_SIZE + 2), topArea.getY() + 4, ICON_SIZE, ICON_SIZE, this));
-        socialButtons.add(new SocialButton(DISCORD_ICON, "", topArea.getRight() - (ICON_SIZE + 2) * 2, topArea.getY() + 4, ICON_SIZE, ICON_SIZE, this));
-        socialButtons.add(new SocialButton(GITHUB_ICON, "", topArea.getRight() - (ICON_SIZE + 2) * 3, topArea.getY() + 4, ICON_SIZE, ICON_SIZE, this));
+        socialButtons.add(new SocialButton(MODRINTH_ICON, ModUtils.getSocialLink("modrinth"), topArea.getRight() - (ICON_SIZE + 2), topArea.getY() + 4, ICON_SIZE, ICON_SIZE, this));
+        socialButtons.add(new SocialButton(DISCORD_ICON, ModUtils.getSocialLink("discord"), topArea.getRight() - (ICON_SIZE + 2) * 2, topArea.getY() + 4, ICON_SIZE, ICON_SIZE, this));
+        socialButtons.add(new SocialButton(GITHUB_ICON, ModUtils.getSocialLink("github"), topArea.getRight() - (ICON_SIZE + 2) * 3, topArea.getY() + 4, ICON_SIZE, ICON_SIZE, this));
 
         // Update categories and options
         int categoriesHeight = 0;
@@ -103,7 +104,7 @@ public class ConfigScreen extends Screen {
         context.getMatrices().pop();
 
         // Render Version
-        context.drawTextWithShadow(this.textRenderer, Skyplus.getModVersion(), versionX, versionY, VERSION_COLOR);
+        context.drawTextWithShadow(this.textRenderer, ModUtils.getModVersion(), versionX, versionY, VERSION_COLOR);
 
         // Render Categories name and content of the selected one
         for (Category category : categories) {

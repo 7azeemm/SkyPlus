@@ -28,6 +28,11 @@
     "minecraft": "${minecraft_version}"
   },
   "custom": {
+    "socialLinks": {
+      "modrinth": "",
+      "discord": "https://discord.gg/Bb6z9Hymv6",
+      "github": "https://github.com/7azeemm/SkyPlus"
+    },
     "modmenu": {
       "links": {
         "modmenu.discord": "https://discord.gg/Bb6z9Hymv6",
