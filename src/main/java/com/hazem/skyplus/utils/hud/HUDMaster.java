@@ -39,12 +39,3 @@ public class HUDMaster {
         }
     }
 }
-/*
-After finishing your screen, in order to avoid potential issues, please check:
-
-whether the screen returns to the last screen (parent screen) when you press “Esc”
-whether these classes exist only on client (which means they will not be loaded in the dedicated server)
-whether elements are focused in the correct order when you press “Tab” to select them
-whether the behaviors are correct when you resize
-whether the narrations are correct when you use “Tab” or mouse cursor to select element while narration enabled
- */

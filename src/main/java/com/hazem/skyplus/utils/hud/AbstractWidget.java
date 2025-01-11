@@ -18,6 +18,7 @@ public abstract class AbstractWidget {
     private static final int BASE_WIDTH = 1366;
     private static final int BASE_HEIGHT = 768;
     private final ObjectArrayList<Component> components = new ObjectArrayList<>();
+    private int x, y;
     private int width, height;
 
     /**
@@ -78,6 +79,23 @@ public abstract class AbstractWidget {
             height += component.getHeight() + PADDING; // Add component height and padding.
             width = Math.max(width, component.getWidth() + PADDING - 1); // Adjust to the widest component.
         }
+
+        int windowWidth = CLIENT.getWindow().getWidth();
+        int windowHeight = CLIENT.getWindow().getHeight();
+        double scaleFactor = CLIENT.getWindow().getScaleFactor();
+
+        // Calculate the x and y positions based on the base resolution and window size
+        x = (int) Math.round((getX() / scaleFactor) * windowWidth / BASE_WIDTH);
+        y = (int) Math.round((getY() / scaleFactor) * windowHeight / BASE_HEIGHT);
+
+        // Ensure the widget doesn't go off the edges of the window
+        if ((x + width) * scaleFactor > windowWidth) {
+            x = (int) Math.ceil((windowWidth - (width * scaleFactor)) / scaleFactor);
+        }
+
+        if ((y + height) * scaleFactor > windowHeight) {
+            y = (int) Math.ceil((windowHeight - (height * scaleFactor)) / scaleFactor);
+        }
     }
 
     /**
@@ -107,22 +125,7 @@ public abstract class AbstractWidget {
         components.add(new Component(itemStack));
     }
 
-    //TODO: fix size calculations (should be in init method)
     final void render(DrawContext context) {
-        // Get the current window size
-        int windowWidth = CLIENT.getWindow().getWidth();
-        int windowHeight = CLIENT.getWindow().getHeight();
-        double scaleFactor = CLIENT.getWindow().getScaleFactor();
-
-        // Calculate the x and y positions based on the base resolution and window size
-        int x = (int) Math.round((getX() / scaleFactor) * windowWidth / BASE_WIDTH);
-        int y = (int) Math.round((getY() / scaleFactor) * windowHeight / BASE_HEIGHT);
-
-        // Ensure the widget doesn't go off the right edge of the window
-        if ((x + width) * scaleFactor > windowWidth) {
-            x = (int) Math.ceil((windowWidth - (width * scaleFactor)) / scaleFactor); // Adjust x so the widget fits within the window width
-        }
-
         // Draw the background if enabled.
         if (shouldDrawBackground()) {
             drawBackground(context, x, y, width, height);
