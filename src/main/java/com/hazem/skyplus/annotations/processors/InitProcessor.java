@@ -1,6 +1,5 @@
 package com.hazem.skyplus.annotations.processors;
 
-import com.hazem.skyplus.Skyplus;
 import com.hazem.skyplus.annotations.Init;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +12,12 @@ import java.util.List;
 
 public class InitProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitProcessor.class);
-    private static final String PACKAGE_NAME = "com.hazem." + Skyplus.NAMESPACE;
 
     public static void process() {
         List<AnnotatedMethod> initMethods = new ArrayList<>();
-        List<Class<?>> classes = ClassScanner.findClasses(PACKAGE_NAME);
 
-        if (classes.isEmpty()) return;
+        ClassScanner.scan();
+        List<Class<?>> classes = ClassScanner.getClasses();
 
         for (Class<?> clazz : classes) {
             for (Method method : clazz.getDeclaredMethods()) {

@@ -27,7 +27,7 @@ public class ConfigScreen extends Screen {
     private static final int ICON_SIZE = 16;
     private static final List<View> VIEWS = new ArrayList<>();
     private final List<SocialButton> socialButtons = new ArrayList<>();
-    private static View currentView;
+    public static View currentView;
     private final Screen parent;
     private final List<Category> categories;
     private int x, y;
@@ -118,7 +118,7 @@ public class ConfigScreen extends Screen {
     }
 
     private void renderCategory(DrawContext context, Category category, int mouseX, int mouseY) {
-        context.enableScissor(rightArea.getX(), rightArea.getY(), rightArea.getRight(), rightArea.getBottom());
+        context.enableScissor(rightArea.getX(), rightArea.getY(), this.width, rightArea.getBottom());
 
         context.getMatrices().push();
         context.getMatrices().translate(0, -currentView.getScrollbar().getScrollOffset(), 0);
@@ -129,25 +129,25 @@ public class ConfigScreen extends Screen {
         }
 
         // Render groups within the category
-        for (Group group : category.getGroups()) {
-            renderGroup(context, group, mouseX, mouseY);
+        for (SubCategory subCategory : category.getSubCategories()) {
+            renderGroup(context, subCategory, mouseX, mouseY);
         }
 
         context.getMatrices().pop();
         context.disableScissor();
     }
 
-    private void renderGroup(DrawContext context, Group group, int mouseX, int mouseY) {
-        group.render(context);
+    private void renderGroup(DrawContext context, SubCategory subCategory, int mouseX, int mouseY) {
+        subCategory.render(context);
 
-        for (Option option : group.getGroups()) {
+        for (Option option : subCategory.getOptions()) {
             renderOption(context, option, mouseX, mouseY);
         }
     }
 
     private void renderOption(DrawContext context, Option option, int mouseX, int mouseY) {
         option.render(context);
-        option.getController().render(context, currentView.getScrollbar().getScrollOffset(), mouseX, mouseY);
+        option.getController().render(context, mouseX, mouseY, currentView.getScrollbar().getScrollOffset());
     }
 
     @Override
@@ -158,10 +158,10 @@ public class ConfigScreen extends Screen {
         RenderHelper.drawBackground(context, leftArea.getX(), leftArea.getY(), leftArea.getRight(), leftArea.getY() + leftArea.getHeight(), BACKGROUND_COLOR);
         RenderHelper.drawBackground(context, rightArea.getX(), rightArea.getY(), rightArea.getRight(), rightArea.getBottom(), BACKGROUND_COLOR);
 
-        context.drawHorizontalLine(x, x + guiWidth, topArea.getBottom(), BORDER_COLOR);
-        context.drawVerticalLine(leftArea.getRight(), leftArea.getY() - 1, leftArea.getBottom(), BORDER_COLOR);
+        context.drawHorizontalLine(x, x + guiWidth - 1, topArea.getBottom(), BORDER_COLOR);
+        context.drawVerticalLine(leftArea.getRight(), leftArea.getY(), leftArea.getBottom(), BORDER_COLOR);
 
-        RenderHelper.drawBorder(context, x, y, x + guiWidth, y + guiHeight, BORDER_COLOR);
+        context.drawBorder(x, y, guiWidth, guiHeight, BORDER_COLOR);
 
         // Render icons
         for (SocialButton socialButton : socialButtons) {
@@ -200,19 +200,11 @@ public class ConfigScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         float offset = currentView.getScrollbar().getScrollOffset();
 
-        for (Option option : currentView.getCategory().getOptions()) {
+        for (Option option : currentView.getCategory().getAllOptions()) {
             if (option.getController().isHovered(mouseX, mouseY, offset)) {
+                currentView.closeDropdowns(option.getController());
                 option.getController().onClick();
                 return true;
-            }
-        }
-
-        for (Group group : currentView.getCategory().getGroups()) {
-            for (Option option : group.getGroups()) {
-                if (option.getController().isHovered(mouseX, mouseY, offset)) {
-                    option.getController().onClick();
-                    return true;
-                }
             }
         }
 
@@ -225,6 +217,7 @@ public class ConfigScreen extends Screen {
 
         if (currentView.getScrollbar().isVisible()) {
             if (currentView.getScrollbar().isHovered(mouseX, mouseY)) {
+                currentView.closeDropdowns(null);
                 isDragging = true;
                 return true;
             }
@@ -236,6 +229,8 @@ public class ConfigScreen extends Screen {
                 return true;
             }
         }
+
+        currentView.closeDropdowns(null);
 
         return super.mouseClicked(mouseX, mouseY, button);
     }

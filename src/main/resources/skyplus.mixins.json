@@ -13,6 +13,7 @@
     "InventoryScreenMixin",
     "ItemStackMixin",
     "MinecraftClientMixin",
+    "PlayerInventoryMixin",
     "PlayerSkinProviderMixin",
     "ScoreboardMixin",
     "YggdrasilServicesKeyInfoMixin"

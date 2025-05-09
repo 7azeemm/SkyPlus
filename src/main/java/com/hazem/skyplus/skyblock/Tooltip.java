@@ -2,22 +2,15 @@ package com.hazem.skyplus.skyblock;
 
 import com.hazem.skyplus.annotations.Init;
 import com.hazem.skyplus.data.itemPrice.PriceResult;
+import com.hazem.skyplus.utils.FormattingUtils;
 import com.hazem.skyplus.utils.ItemUtils;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.text.Text;
 
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.Optional;
 
 //Only for testing
 public class Tooltip {
-    //TODO: move to formatting utility class
-    private static final NumberFormat NUMBER_FORMATTER_S = NumberFormat.getCompactNumberInstance(Locale.CANADA, NumberFormat.Style.SHORT);
-
-    static {
-        NUMBER_FORMATTER_S.setMaximumFractionDigits(2);
-    }
 
     @Init
     public static void tooltip() {
@@ -25,10 +18,10 @@ public class Tooltip {
             String itemId = stack.getItemId();
 
             Optional<PriceResult> priceResult = ItemUtils.getItemPrice(itemId);
-            priceResult.ifPresent(result -> lines.add(Text.literal("§aPrice: " + NUMBER_FORMATTER_S.format(result.price()) + " coins")));
+            priceResult.ifPresent(result -> lines.add(Text.literal("§aPrice: " + FormattingUtils.formatPrice(result.price()) + " coins")));
 
             Optional<PriceResult> npcPrice = ItemUtils.getNPCPrice(itemId);
-            npcPrice.ifPresent(result -> lines.add(Text.literal("§aNPC Price: " + NUMBER_FORMATTER_S.format(result.price()) + " coins")));
+            npcPrice.ifPresent(result -> lines.add(Text.literal("§aNPC Price: " + FormattingUtils.formatPrice(result.price()) + " coins")));
         });
     }
 }

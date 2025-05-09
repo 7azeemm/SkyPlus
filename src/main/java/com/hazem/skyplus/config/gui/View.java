@@ -1,5 +1,7 @@
 package com.hazem.skyplus.config.gui;
 
+import com.hazem.skyplus.config.controllers.Controller;
+import com.hazem.skyplus.config.controllers.DropdownController;
 import com.hazem.skyplus.utils.gui.Element;
 import com.hazem.skyplus.utils.gui.Region;
 import net.minecraft.client.gui.DrawContext;
@@ -19,6 +21,11 @@ public class View extends Element {
         this.scrollbar = new Scrollbar();
     }
 
+    public void addHeight(int height) {
+        this.maxScrollHeight += height;
+        if (scrollbar.isVisible()) scrollbar.update(maxScrollHeight, scrollPercentage);
+    }
+
     public void init(Region element) {
         super.init(element.getX(), element.getY(), element.getWidth(), element.getHeight());
 
@@ -29,46 +36,54 @@ public class View extends Element {
             maxScrollHeight += option.getHeight();
         }
 
-        for (Group group : category.getGroups()) {
+        for (SubCategory subCategory : category.getSubCategories()) {
             maxScrollHeight += PADDING * 2;
-            group.init(x + width / 2, y + maxScrollHeight);
-            group.setLinePosition(x + LINE_OFFSET, x + width - Scrollbar.SCROLLBAR_WIDTH - LINE_OFFSET);
+            subCategory.init(x + width / 2, y + maxScrollHeight);
+            subCategory.setLinePosition(x + LINE_OFFSET, x + width - Scrollbar.SCROLLBAR_WIDTH - LINE_OFFSET);
             maxScrollHeight += this.textRenderer.fontHeight;
 
-            for (Option option : group.getGroups()) {
+            for (Option option : subCategory.getOptions()) {
                 maxScrollHeight += PADDING;
                 option.init(x + LEFT_PADDING, y + maxScrollHeight, width - LEFT_PADDING * 2);
                 maxScrollHeight += option.getHeight();
             }
         }
 
-        // Adjust scrollPercentage to remain valid after resizing
-        if (maxScrollHeight > height) {
-            scrollPercentage = Math.max(0, Math.min(scrollPercentage, 1.0));
-        }
-
         scrollbar.init(x, y, width, height, maxScrollHeight, scrollPercentage);
     }
 
     public void onMouseScroll(double verticalAmount) {
-        float scrollDelta = (float) verticalAmount * SCROLL_STEP / (maxScrollHeight - height);
+        float scrollDelta = (float) verticalAmount * SCROLL_STEP / (maxScrollHeight - height + Scrollbar.SCROLLBAR_OFFSET * 2);
         scrollPercentage = Math.clamp(scrollPercentage - scrollDelta, 0.0f, 1.0f);
         scrollbar.update(maxScrollHeight, scrollPercentage);
     }
 
     public void onMouseDrag(double deltaY) {
-        double newBarY = scrollbar.getY() + deltaY;
-        newBarY = Math.max(y + Scrollbar.SCROLLBAR_OFFSET, Math.min(y + height - scrollbar.getHeight() - Scrollbar.SCROLLBAR_OFFSET, newBarY));
+        int scrollBarStartY = y + Scrollbar.SCROLLBAR_OFFSET;
+        int scrollBarEndY = bottom - scrollbar.getHeight() - Scrollbar.SCROLLBAR_OFFSET;
 
-        double scrollRange = height - scrollbar.getHeight() - Scrollbar.SCROLLBAR_OFFSET * 2;
-        scrollPercentage = Math.max(0.0, Math.min(1.0, (newBarY - (y + Scrollbar.SCROLLBAR_OFFSET)) / scrollRange));
+        double newBarY = Math.max(scrollBarStartY, Math.min(scrollBarEndY, scrollbar.getY() + deltaY));
+
+        double scrollRange = scrollBarEndY - scrollBarStartY;
+        scrollPercentage = (newBarY - scrollBarStartY) / scrollRange;
 
         scrollbar.update(maxScrollHeight, scrollPercentage);
     }
 
+    public void closeDropdowns(Controller controller) {
+        for (Option option : category.getAllOptions()) {
+            if (option.getController() != controller && option.getController() instanceof DropdownController dropdownController) {
+                if (dropdownController.isExpanded()) {
+                    dropdownController.close();
+                    return;
+                }
+            }
+        }
+    }
+
     @Override
     public void render(DrawContext context) {
-
+        //Components already rendered in ConfigScreen
     }
 
     public Category getCategory() {

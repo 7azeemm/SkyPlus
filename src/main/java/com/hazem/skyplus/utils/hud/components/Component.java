@@ -1,5 +1,6 @@
 package com.hazem.skyplus.utils.hud.components;
 
+import com.hazem.skyplus.utils.gui.Region;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
@@ -10,10 +11,8 @@ import net.minecraft.text.Text;
  * The component can have multiple elements arranged horizontally, and it handles rendering
  * and size calculations for those elements.
  */
-public class Component {
-    private static final int PADDING = 4;
+public class Component extends Region {
     private final ObjectArrayList<Element> elements;
-    private int width, height;
 
     /**
      * Constructs a new Component using the provided {@link ComponentBuilder}.
@@ -21,7 +20,7 @@ public class Component {
      * @param builder The builder containing the elements to be added to the component.
      */
     public Component(ComponentBuilder builder) {
-        this.elements = builder.elements;
+        elements = builder.elements;
         update();
     }
 
@@ -32,7 +31,7 @@ public class Component {
      * @param text The text to be displayed as an element in the component.
      */
     public Component(Text text) {
-        this.elements = ObjectArrayList.of(new TextElement(text));
+        elements = ObjectArrayList.of(new TextElement(text));
         update();
     }
 
@@ -43,7 +42,12 @@ public class Component {
      * @param itemStack The icon to be displayed as an element in the component.
      */
     public Component(ItemStack itemStack) {
-        this.elements = ObjectArrayList.of(new ItemStackElement(itemStack));
+        elements = ObjectArrayList.of(new ItemStackElement(itemStack));
+        update();
+    }
+
+    public Component(int padding) {
+        elements = ObjectArrayList.of(new PaddingElement(padding));
         update();
     }
 
@@ -62,20 +66,12 @@ public class Component {
      * Updates the dimensions of the component based on the size of the elements it contains.
      */
     private void update() {
-        width = PADDING; // Start width as 0 to calculate based on content.
+        width = 0;
         height = 0;
 
         for (Element element : elements) {
             width += element.getWidth(); // Add element width.
             height = Math.max(height, element.getHeight()); // Max height of all elements.
         }
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
     }
 }

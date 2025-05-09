@@ -2,6 +2,7 @@ package com.hazem.skyplus.data.itemPrice;
 
 import com.hazem.skyplus.annotations.Init;
 import com.hazem.skyplus.constants.ItemRarity;
+import com.hazem.skyplus.events.ItemsPriceEvents;
 import com.hazem.skyplus.utils.APIUtils;
 import com.hazem.skyplus.utils.schedular.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
@@ -30,6 +31,7 @@ public class Auction {
                     Object2DoubleOpenHashMap<String> parsedData = parseLowestBinData(json.toString());
                     if (!parsedData.isEmpty()) {
                         data = parsedData;
+                        ItemsPriceEvents.PRICE_UPDATE.invoker().onPriceUpdate();
                     } else {
                         LOGGER.error("Failed to update Auction data. Parsed auction data is empty.");
                     }

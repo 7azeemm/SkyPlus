@@ -4,23 +4,18 @@ import com.hazem.skyplus.utils.gui.Element;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Group extends Element {
+public class SubCategory extends Element {
     private static final int NAME_COLOR = 0xAAAAAA;
     private static final int LINE_COLOR = 0xFFAAAAAA;
     private final Text name;
     private final List<Option> options;
     private int left, right;
 
-    public Group(GroupBuilder builder) {
-        this.name = builder.name;
-        this.options = builder.options;
-    }
-
-    public static GroupBuilder createBuilder() {
-        return new GroupBuilder();
+    public SubCategory(Text name, List<Option> options) {
+        this.name = name;
+        this.options = options;
     }
 
     public void setLinePosition(int left, int right) {
@@ -40,26 +35,7 @@ public class Group extends Element {
         context.drawHorizontalLine(x + width / 2 + 3, right, y + height / 2, LINE_COLOR);
     }
 
-    public List<Option> getGroups() {
+    public List<Option> getOptions() {
         return options;
-    }
-
-    public static class GroupBuilder {
-        private final List<Option> options = new ArrayList<>();
-        private Text name;
-
-        public GroupBuilder name(Text name) {
-            this.name = name;
-            return this;
-        }
-
-        public GroupBuilder option(Option option) {
-            this.options.add(option);
-            return this;
-        }
-
-        public Group build() {
-            return new Group(this);
-        }
     }
 }

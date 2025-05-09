@@ -1,5 +1,6 @@
 package com.hazem.skyplus.annotations.processors;
 
+import com.hazem.skyplus.Skyplus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,21 +15,22 @@ import java.util.stream.Stream;
 
 public class ClassScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassScanner.class);
+    private static final String PACKAGE_NAME = "com.hazem." + Skyplus.NAMESPACE;
+    private static final List<Class<?>> CLASSES = new ArrayList<>();
 
-    public static List<Class<?>> findClasses(String packageName) {
-        List<Class<?>> classes = new ArrayList<>();
-        String path = packageName.replace('.', '/');
+    public static void scan() {
+        String path = PACKAGE_NAME.replace('.', '/');
         URL resource = Thread.currentThread().getContextClassLoader().getResource(path);
 
         if (resource == null) {
-            LOGGER.warn("Package not found: {}", packageName);
-            return classes; // Package not found
+            LOGGER.warn("Package not found: {}", PACKAGE_NAME);
+            return;
         }
 
         File root = new File(resource.getFile());
         if (!root.exists() || !root.isDirectory()) {
             LOGGER.warn("Invalid package directory: {}", root.getAbsolutePath());
-            return classes; // Invalid package directory
+            return;
         }
 
         try (Stream<Path> paths = Files.walk(root.toPath())) {
@@ -36,13 +38,13 @@ public class ClassScanner {
                     .filter(pathItem -> pathItem.toString().endsWith(".class"))
                     .forEach(pathItem -> {
                         String relativePath = root.toPath().relativize(pathItem).toString();
-                        String className = packageName + '.' + relativePath.replace(File.separator, ".").replace(".class", "");
+                        String className = PACKAGE_NAME + '.' + relativePath.replace(File.separator, ".").replace(".class", "");
 
                         // Skip mixin classes
                         if (className.contains("Mixin")) return;
 
                         try {
-                            classes.add(Class.forName(className));
+                            CLASSES.add(Class.forName(className));
                         } catch (Exception e) {
                             LOGGER.error("Unexpected error while loading class: {}", className, e);
                         }
@@ -50,6 +52,9 @@ public class ClassScanner {
         } catch (IOException e) {
             LOGGER.error("Error reading directory: {}", root.getAbsolutePath(), e);
         }
-        return classes;
+    }
+
+    public static List<Class<?>> getClasses() {
+        return CLASSES;
     }
 }

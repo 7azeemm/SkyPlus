@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.hazem.skyplus.annotations.Init;
 import com.hazem.skyplus.constants.Location;
+import com.hazem.skyplus.events.SkyBlockEvents;
 import com.hazem.skyplus.utils.schedular.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -32,6 +33,7 @@ public class HypixelData {
     public static String server = "";
     public static String profileID = "";
     public static Location location = Location.UNKNOWN;
+    public static String area = "";
 
     @Init(priority = Init.Priority.HIGH)
     public static void init() {
@@ -39,6 +41,10 @@ public class HypixelData {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
         ClientReceiveMessageEvents.ALLOW_GAME.register(HypixelData::onChatMessage);
         Scheduler.getInstance().scheduleCyclic(HypixelData::getScoreboardLines, 0,20);
+    }
+
+    public static boolean isInArea(String area) {
+        return HypixelData.area.equals(area);
     }
 
     public static boolean isInIsland(List<Location> islands) {
@@ -50,6 +56,9 @@ public class HypixelData {
     }
 
     private static void onJoin(ClientPlayNetworkHandler handler) {
+        SkyBlockEvents.LOBBY_CHANGE.invoker().onLobbyChange();
+        SkyBlockEvents.LOCATION_CHANGE.invoker().onLocationChange();
+
         messagesToSuppress = 0;
         ServerInfo serverInfo = handler.getServerInfo();
         if (serverInfo != null) {
@@ -78,8 +87,15 @@ public class HypixelData {
 
             if (isInSkyblock) {
                 if (message.startsWith(PROFILE_ID_PREFIX)) {
+                    String oldId = profileID;
+
                     profileID = message.substring(PROFILE_ID_PREFIX.length());
                     profileIdRequested = false;
+
+                    if (oldId.isEmpty()) SkyBlockEvents.FIRST_JOIN.invoker().onFirstJoin();
+                    if (!oldId.equals(profileID)) SkyBlockEvents.PROFILE_CHANGE.invoker().onProfileChange();
+
+                    SkyBlockEvents.PROFILE_ID_DETECTED.invoker().onProfileIdDetected();
                 }
 
                 // Suppress the two unwanted messages after PROFILE_ID_PREFIX (DASHES - NO DASHES)
@@ -94,42 +110,64 @@ public class HypixelData {
 
     private static void getScoreboardLines() {
         if (CLIENT.player == null) return;
+        SCOREBOARD_LINES.clear();
         Scoreboard scoreboard = CLIENT.player.getScoreboard();
         ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
-        SCOREBOARD_LINES.clear();
+        boolean detectedArea = false;
 
+        if (objective != null) SCOREBOARD_LINES.add(objective.getDisplayName().getString());
         for (ScoreHolder scoreHolder : scoreboard.getKnownScoreHolders()) {
             if (scoreboard.getScoreHolderObjectives(scoreHolder).containsKey(objective)) {
                 Team team = scoreboard.getScoreHolderTeam(scoreHolder.getNameForScoreboard());
                 if (team != null) {
                     String strLine = team.getPrefix().getString() + team.getSuffix().getString();
-                    if (!strLine.isBlank()) SCOREBOARD_LINES.add(strLine);
+                    if (!strLine.isBlank()) {
+                        SCOREBOARD_LINES.add(strLine);
+                        if (isInSkyblock) {
+                            if (strLine.contains("⏣") || strLine.contains("ф")) {
+                                String oldArea = area;
+                                area = strLine.replaceAll("[⏣ф]", "").trim();
+                                detectedArea = true;
+
+                                if (!oldArea.equals(area)) SkyBlockEvents.AREA_CHANGE.invoker().onAreaChange();
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        if (objective != null) SCOREBOARD_LINES.add(objective.getDisplayName().getString());
+        if (!detectedArea) area = "";
     }
 
     private static void sendLocrawRequest() {
         Scheduler.getInstance().schedule(() -> ChatUtils.sendCommand("locraw"), LOC_RAW_REQUEST_DELAY);
     }
 
+    //TODO: remove from command history + request id + also too many messages to suppress
     private static void scheduleProfileIdRequest() {
         Scheduler.getInstance().schedule(() -> {
             if (profileIdRequested) {
                 messagesToSuppress = 2;
                 ChatUtils.sendCommand("profileid");
             }
-        }, PROFILE_ID_REQUEST_DELAY);// 8 seconds
+        }, PROFILE_ID_REQUEST_DELAY);
     }
 
     private static void parseLocRaw(String text) {
         JsonObject locRaw = JsonParser.parseString(text).getAsJsonObject();
 
+        boolean inSkyblock = isInSkyblock;
+
         isInSkyblock = locRaw.has("gametype") && locRaw.get("gametype").getAsString().equals("SKYBLOCK");
         server = locRaw.has("server") ? locRaw.get("server").getAsString() : "";
         location = locRaw.has("mode") ? Location.from(locRaw.get("mode").getAsString()) : Location.UNKNOWN;
+
+        if (isInSkyblock && !inSkyblock) {
+            SkyBlockEvents.JOIN.invoker().onJoin();
+        } else if (!isInSkyblock && inSkyblock) {
+            SkyBlockEvents.LEAVE.invoker().onLeave();
+        }
     }
 
     private static void onDisconnect() {
@@ -138,6 +176,7 @@ public class HypixelData {
         isInSkyblock = false;
         server = "";
         location = Location.UNKNOWN;
+        area = "";
         messagesToSuppress = 0;
     }
 }

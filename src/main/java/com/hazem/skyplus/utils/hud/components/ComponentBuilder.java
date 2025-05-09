@@ -33,4 +33,9 @@ public class ComponentBuilder {
         elements.add(new ItemStackElement(itemStack));
         return this;
     }
+
+    public ComponentBuilder addPadding(int padding) {
+        elements.add(new PaddingElement(padding));
+        return this;
+    }
 }

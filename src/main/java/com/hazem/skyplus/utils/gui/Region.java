@@ -22,8 +22,11 @@ public class Region {
     public void init(int x, int y) {
         this.x = x;
         this.y = y;
+        this.right = x + width;
+        this.bottom = y + height;
     }
 
+    // For Text elements.
     public void init(int x, int y, int width) {
         this.x = x;
         this.y = y;

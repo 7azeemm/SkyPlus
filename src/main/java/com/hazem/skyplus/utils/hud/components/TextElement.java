@@ -18,7 +18,7 @@ public class TextElement implements Element {
     public void render(DrawContext context, int x, int y) {
         // Retrieve the color from the text style, defaulting to white (0xFFFFFF) if no color is set
         int color = text.getStyle().getColor() != null ? text.getStyle().getColor().getRgb() : 0xFFFFFF;
-        context.drawText(textRenderer, text, x, y, color, false);
+        context.drawText(textRenderer, text, x, y, color, true);
     }
 
     @Override

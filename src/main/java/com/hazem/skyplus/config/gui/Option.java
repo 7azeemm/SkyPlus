@@ -17,49 +17,41 @@ public class Option extends Element {
     private final Controller controller;
     private int nameX, nameY;
     private int descriptionX, descriptionY;
-    private int maxWidth;
 
-    public Option(OptionBuilder builder) {
-        this.name = builder.name;
-        this.description = builder.description;
-        this.controller = builder.controller;
-    }
-
-    public static OptionBuilder createBuilder() {
-        return new OptionBuilder();
+    public Option(Text name, Text description, Controller controller) {
+        this.name = name;
+        this.description = description;
+        this.controller = controller;
     }
 
     @Override
     public void render(DrawContext context) {
-        RenderHelper.drawBackgroundWithBorder(context, x, y, right, bottom, BACKGROUND_COLOR, BORDER_COLOR);
-        context.drawWrappedText(this.textRenderer, name, nameX, nameY, maxWidth, NAME_COLOR, false);
+        RenderHelper.drawBackgroundWithBorder(context, x, y, width, height, BACKGROUND_COLOR, BORDER_COLOR);
+        context.drawWrappedText(this.textRenderer, name, nameX, nameY, getMaxWidth(), NAME_COLOR, false);
         if (hasDescription())
-            context.drawWrappedTextWithShadow(this.textRenderer, description, descriptionX, descriptionY, maxWidth, DESCRIPTION_COLOR);
+            context.drawWrappedTextWithShadow(this.textRenderer, description, descriptionX, descriptionY, getMaxWidth(), DESCRIPTION_COLOR);
     }
 
     @Override
     public void init(int x, int y, int width) {
-        this.maxWidth = width - controller.getMinWidth();
         super.init(x, y, width);
+        controller.initSize();
         height = calculateHeight();
         bottom = y + height;
         controller.init(this);
     }
 
     private int calculateHeight() {
-        int height = 0;
-
-        height += 2; // Border's lines (Top and Bottom)
-        height += PADDING; // Top padding
+        int height = PADDING + 1; // Top padding
 
         nameY = y + height;
         nameX = x + PADDING;
-        height += this.textRenderer.getWrappedLinesHeight(name, maxWidth);
+        height += this.textRenderer.getWrappedLinesHeight(name, getMaxWidth());
 
         if (hasDescription()) {
             descriptionY = y + height;
             descriptionX = x + PADDING;
-            height += this.textRenderer.getWrappedLinesHeight(description, maxWidth);
+            height += this.textRenderer.getWrappedLinesHeight(description, getMaxWidth());
         }
 
         height += PADDING; // Bottom padding
@@ -68,7 +60,7 @@ public class Option extends Element {
     }
 
     public int getMaxWidth() {
-        return maxWidth;
+        return width - controller.getMinWidth();
     }
 
     public boolean hasDescription() {
@@ -77,30 +69,5 @@ public class Option extends Element {
 
     public Controller getController() {
         return controller;
-    }
-
-    public static class OptionBuilder {
-        private Text name;
-        private Text description;
-        private Controller controller;
-
-        public OptionBuilder name(Text name) {
-            this.name = name;
-            return this;
-        }
-
-        public OptionBuilder description(Text description) {
-            this.description = description;
-            return this;
-        }
-
-        public OptionBuilder controller(Controller controller) {
-            this.controller = controller;
-            return this;
-        }
-
-        public Option build() {
-            return new Option(this);
-        }
     }
 }

@@ -1,6 +1,5 @@
 package com.hazem.skyplus.annotations.processors;
 
-import com.hazem.skyplus.Skyplus;
 import com.hazem.skyplus.annotations.Init;
 import com.hazem.skyplus.annotations.Widget;
 import com.hazem.skyplus.utils.hud.AbstractWidget;
@@ -14,14 +13,11 @@ import java.util.List;
 
 public class WidgetProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(WidgetProcessor.class);
-    private static final String PACKAGE_NAME = "com.hazem." + Skyplus.NAMESPACE;
 
-    @Init(priority = Init.Priority.MEDIUM)
+    @Init(priority = Init.Priority.MEDIUM, ordinal = 1)
     public static void process() {
         List<Class<?>> widgetClasses = new ArrayList<>();
-        List<Class<?>> classes = ClassScanner.findClasses(PACKAGE_NAME);
-
-        if (classes.isEmpty()) return;
+        List<Class<?>> classes = ClassScanner.getClasses();
 
         for (Class<?> clazz : classes) {
             if (clazz.isAnnotationPresent(Widget.class)) {

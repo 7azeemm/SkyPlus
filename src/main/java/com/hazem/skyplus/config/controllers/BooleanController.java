@@ -1,6 +1,5 @@
 package com.hazem.skyplus.config.controllers;
 
-import com.hazem.skyplus.config.gui.Option;
 import com.hazem.skyplus.utils.RenderHelper;
 import net.minecraft.client.gui.DrawContext;
 
@@ -13,10 +12,8 @@ public class BooleanController extends Controller {
     private static final int SQUIRE_COLOR = 0xFF141414;
     private static final int TRUE_COLOR = 0xFF00cccc;
     private static final int FALSE_COLOR = 0xFF7c7c7c;
-    private static final int PADDING = 10;
-    private static final int MIN_WIDTH = BUTTON_WIDTH + PADDING * 2;
-    private final boolean defaultValue;
     private final Consumer<Boolean> consumer;
+    private final boolean defaultValue;
     private boolean toggle;
 
     public BooleanController(Consumer<Boolean> consumer, boolean toggle) {
@@ -26,13 +23,10 @@ public class BooleanController extends Controller {
     }
 
     @Override
-    public void init(Option option) {
-        x = option.getX() + option.getMaxWidth() + PADDING;
-        y = option.getY() + (int) Math.ceil((double) option.getHeight() / 2) - BUTTON_HEIGHT / 2;
-        width = BUTTON_WIDTH;
-        height = BUTTON_HEIGHT;
-        right = x + width;
-        bottom = y + height;
+    public void initSize() {
+        this.width = BUTTON_WIDTH;
+        this.height = BUTTON_HEIGHT;
+        this.minWidth = width + PADDING * 2;
     }
 
     @Override
@@ -48,10 +42,5 @@ public class BooleanController extends Controller {
     public void onClick() {
         this.toggle = !toggle;
         this.consumer.accept(toggle);
-    }
-
-    @Override
-    public int getMinWidth() {
-        return MIN_WIDTH;
     }
 }

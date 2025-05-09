@@ -45,6 +45,7 @@ public class JacobContestsAPI {
         });
     }
 
+    //TODO: refactor (negative timer)
     public static void getContestInfo() {
         long now = System.currentTimeMillis();
         boolean nextContestFound = false;

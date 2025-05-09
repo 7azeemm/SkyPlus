@@ -24,10 +24,11 @@ public class Scrollbar extends Element {
         visible = maxScrollHeight - visibleHeight > 0;
 
         if (visible) {
-            this.x = x + width - SCROLLBAR_WIDTH - 2;
+            this.x = x + width - SCROLLBAR_WIDTH - 3;
             this.width = SCROLLBAR_WIDTH;
-            update(maxScrollHeight, scrollPercentage);
         }
+
+        update(maxScrollHeight, visible ? scrollPercentage : 0d);
     }
 
     public void update(int maxScrollHeight, double scrollPercentage) {
@@ -38,7 +39,7 @@ public class Scrollbar extends Element {
 
     @Override
     public void render(DrawContext context) {
-        RenderHelper.drawBackgroundWithBorder(context, x - 1, startY - 1, x + SCROLLBAR_WIDTH, endY, BACKGROUND_COLOR, BORDER_COLOR);
+        RenderHelper.drawBackgroundWithBorder(context, x - 1, startY - 1, SCROLLBAR_WIDTH + 2, visibleHeight + 2, BACKGROUND_COLOR, BORDER_COLOR);
         context.fill(x, y, x + SCROLLBAR_WIDTH, y + height, FILL_COLOR);
     }
 

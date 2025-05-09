@@ -1,6 +1,7 @@
 package com.hazem.skyplus.data.itemPrice;
 
 import com.hazem.skyplus.annotations.Init;
+import com.hazem.skyplus.events.ItemsPriceEvents;
 import com.hazem.skyplus.utils.APIUtils;
 import com.hazem.skyplus.utils.schedular.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -27,6 +28,7 @@ public class Bazaar {
                 .thenAccept(response -> {
                     if (response != null && response.success()) {
                         data = response;
+                        ItemsPriceEvents.PRICE_UPDATE.invoker().onPriceUpdate();
                     } else {
                         LOGGER.error("Failed to update Bazaar data. Response was either null or unsuccessful.");
                     }

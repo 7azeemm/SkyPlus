@@ -13,8 +13,8 @@ import net.minecraft.text.Text;
  */
 public abstract class AbstractWidget {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    private static final int BACKGROUND_COLOR = 0xc00c0c0c; // Widget's background color.
-    private static final int PADDING = 4; // Padding around and within the widget.
+    private static final int WIDGET_BACKGROUND_COLOR = 0xc00c0c0c;
+    private static final int PADDING = 4;
     private static final int BASE_WIDTH = 1366;
     private static final int BASE_HEIGHT = 768;
     private final ObjectArrayList<Component> components = new ObjectArrayList<>();
@@ -23,6 +23,7 @@ public abstract class AbstractWidget {
 
     /**
      * Determines whether the widget should render on the screen.
+     * Subclasses can override this to disable the background rendering.
      *
      * @return true if the widget should render, false otherwise.
      */
@@ -62,24 +63,33 @@ public abstract class AbstractWidget {
      * Updates the widget for the current frame by clearing old components,
      * running the update logic, and recalculating the widget's size.
      */
-    final void updateFrame() {
+    protected void updateFrame() {
         components.clear(); // Clear previous components.
         update(); // Update widget logic.
-        recalculateSize(); // Adjust size based on components.
+        init(); // Adjust size based on components.
+        ensureWidgetInBounds();
     }
 
     /**
      * Recalculates the size of the widget based on the dimensions of its components.
      */
-    final void recalculateSize() {
-        height = PADDING / 2; // Initialize with top padding.
+    private void init() {
+        height = PADDING;
         width = 0;
 
         for (Component component : components) {
-            height += component.getHeight() + PADDING; // Add component height and padding.
-            width = Math.max(width, component.getWidth() + PADDING - 1); // Adjust to the widest component.
+            component.init(x + PADDING, y + height);
+            height += component.getHeight();
+            width = Math.max(width, component.getWidth() + PADDING * 2);
         }
+        height += PADDING / 2;
+    }
 
+    /**
+     * Ensures that the widget stays within the window's bounds.
+     * Adjusts the widget's position if it exceeds the window dimensions.
+     */
+    private void ensureWidgetInBounds() {
         int windowWidth = CLIENT.getWindow().getWidth();
         int windowHeight = CLIENT.getWindow().getHeight();
         double scaleFactor = CLIENT.getWindow().getScaleFactor();
@@ -125,23 +135,31 @@ public abstract class AbstractWidget {
         components.add(new Component(itemStack));
     }
 
-    final void render(DrawContext context) {
+    /**
+     * Adds padding between elements within the widget.
+     * Padding creates an empty space that separates components from one another, allowing for better visual organization.
+     *
+     * @param padding The size of the padding space in pixels to be added between widget components.
+     */
+    public void addPadding(int padding) {
+        components.add(new Component(padding));
+    }
+
+    protected void render(DrawContext context) {
         // Draw the background if enabled.
         if (shouldDrawBackground()) {
             drawBackground(context, x, y, width, height);
         }
 
-        // Render each component with proper padding.
-        int yOffset = y + PADDING; // Start below the top padding.
+        // Render components.
         for (Component component : components) {
-            component.render(context, x + PADDING, yOffset); // Render the component.
-            yOffset += component.getHeight() + PADDING; // Move to the next component position.
+            component.render(context, component.getX(), component.getY());
         }
     }
 
     private void drawBackground(DrawContext context, int x, int y, int width, int height) {
-        context.fill(x + 1, y, x + width - 1, y + height, BACKGROUND_COLOR); // Main background.
-        context.fill(x, y + 1, x + 1, y + height - 1, BACKGROUND_COLOR); // Left border.
-        context.fill(x + width - 1, y + 1, x + width, y + height - 1, BACKGROUND_COLOR); // Right border.
+        context.fill(x + 1, y, x + width - 1, y + height, WIDGET_BACKGROUND_COLOR); // Main background.
+        context.fill(x, y + 1, x + 1, y + height - 1, WIDGET_BACKGROUND_COLOR); // Left border.
+        context.fill(x + width - 1, y + 1, x + width, y + height - 1, WIDGET_BACKGROUND_COLOR); // Right border.
     }
 }
